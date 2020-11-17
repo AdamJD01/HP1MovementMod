@@ -4,6 +4,8 @@
 
 class BaseSneakActor extends baseChar;
 
+//Edited by- AdamJD (edited code will have AdamJD by it)
+
 // These are so we can keep track of the running speed and animations, since these characters vary between
 //	walking and running pretty often...
 var int OldGroundspeed;			// The Original Walk Speed
@@ -233,11 +235,13 @@ function FindHarryTick(float DeltaTime)
 		if(playerHarry.Opacity >= 0.8)
 		{
 			playerHarry.clientMessage("BaseSneakActor went to state RunLocation");
-			gotostate('RunLocation');
+			//gotostate('RunLocation'); //old retail code -AdamJD
+			gotostate('Caught'); //make Harry caught if Filch sees him when visible instead of running towards him -AdamJD
 		}
 	}
 	
-	if (playerHarry.IsInState('playeraiming'))	// Must be casting a spell
+	//if (playerHarry.IsInState('playeraiming'))	// Must be casting a spell //old not needed retail PlayerAiming state -AdamJD
+	if (InvisHarry.bPlayerCasting) //is InvisibleHarry casting? -AdamJD
 	{
 		if(cansee(playerHarry))
 		{
@@ -252,7 +256,7 @@ function FindHarryTick(float DeltaTime)
 	
 	foreach allActors(class'InvisibleHarry', InvisHarry)
 	{
-		if( InvisHarry.bIsPlayer&& InvisHarry!=Self)
+		if( InvisHarry.bIsPlayer && InvisHarry!=Self)
 		{
 			// We can only hear him if he's moving
 			if(InvisHarry.IsMoving)
@@ -482,6 +486,7 @@ state RunLocation
 	}
 
 Begin:
+	
 	// Make the Run Speed Really Fast
 	groundspeed = RunningSpeed;
 

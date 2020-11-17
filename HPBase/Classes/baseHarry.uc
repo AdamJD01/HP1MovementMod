@@ -1,5 +1,7 @@
 class baseHarry expands PlayerPawn;
 
+// Edited by- AdamJD (edited code will have AdamJD by it)
+
 var bool clearMessages;
 
 // The following inputs are in addition to the standard inputs defined in PlayerPawn.uc.
@@ -161,6 +163,31 @@ var travel bool bHasBark;
 // sto: For debugging purposes, below
 var globalconfig bool bDisableDialog;
 
+function Cast()
+{
+	//overridden in Harry.uc (best method to do this the way this cursed code is set up...)-AdamJD
+}
+
+function StartCasting()
+{
+	//go to StartCasting function in Harry class -AdamJD
+}
+
+function StopCasting()
+{
+	//nothing to see here... -AdamJD
+}
+
+function PlayFinishCastAnim()
+{
+	//you know the drill by now -AdamJD
+}
+
+function PlayFinishThrowCrackerAnim()
+{
+	//same as PlayFinishCastAnim but for wizard crackers -AdamJD
+}
+
 function AddStars(int n)
 {
 	numStars+=n;
@@ -168,6 +195,7 @@ function AddStars(int n)
 		baseHud(myHud).StarItem.Show();
 
 }
+
 function AddBeans(int n)
 {
 	numBeans+=n;
@@ -514,9 +542,9 @@ function actor ExtendTarget()
 	local rotator checkAngle, bestAngle;
 	local vector objectDir;
 	
-	checkangle = rotator(rectarget.location - location);
+	checkangle = rotator(rectarget.location - location); 
 	defaultYaw = Rotation.yaw & 0xffff;
-	defaultpitch = rectarget.TargetPitch & 0xffff;
+	defaultpitch = rectarget.TargetPitch & 0xffff; 
 
 	BestTarget = none;
 
@@ -1090,8 +1118,6 @@ Begin:
 	gotostate(CutSaveState);
 }
 
-
-
 state wingspell
 {
 function tick (float deltaTime)
@@ -1120,6 +1146,8 @@ function endstate()
 
 	{
 		baseprops(focusActor).bStopLevitating=true;
+		freeHarry();
+		PlayFinishCastAnim(); //stops Harry running with his arms up after casting wingardium -AdamJD
 	}
 
 
@@ -1130,7 +1158,8 @@ function endstate()
 	enable('tick');
 	loopanim('breath');
 	setphysics(phys_rotating);
-	sleep(0.1);
+	setphysics(phys_falling); //BUG UPDATE (27/02/2020) Made Harry fall to the ground if he's in the air when casting wingardium -AdamJD
+	sleep(0.1);	
 
 	loop:
 	lookhere=focusActor.location;
@@ -1142,18 +1171,18 @@ function endstate()
 	if(bSkipKeyPressed)
 	{
 			baseprops(focusActor).bStopLevitating=true;
-			
+			freeHarry();
 	}
 	playanim('wave');
-	rectarget.victim.eVulnerableToSpell=SPELL_WingSustain;
+	rectarget.victim.eVulnerableToSpell=SPELL_WingSustain; 
 	basewand(weapon).ChooseSpell(SPELL_WingSustain);
-	basewand(weapon).castspell(rectarget.victim);
+	basewand(weapon).castspell(rectarget.victim); 
 	sleep(0.3);
 	goto 'loop';
 
 }
 
-function KeyDownEvent(optional int Key )
+function KeyDownEvent( int Key )
 {
 	if(   Level.TimeSeconds - _LastKeyPressTime > 1.0
 	   || _iCurrentStringChar > 20
@@ -1174,30 +1203,30 @@ function KeyDownEvent(optional int Key )
 	{
 		TriggerEvent('HarryCheat', self, self);
 	}
-	else
-	if( _CurrentString ~= "HarryKoresh" )
-	{
-		if( IsInState('PlayerWalking') )
-			HarryK(true);
-	}
-	else
-	if( _CurrentString ~= "HarrySuperKoresh" )
-	{
-		DoJump(0);
-		velocity = (vector(Rotation) + vect(0,0,1)) * 650;
-		HarryK(false);
-		HarryK(false);
-		HarryK(false);
-		HarryK(false);
-		HarryK(false);
-		HarryK(true);
-	}
-	else
-	if( _CurrentString ~= "HarryKorWalk" )
-	{
-		if( IsInState('PlayerWalking') )
-			HarryK(false);
-	}
+	//else
+	//if( _CurrentString ~= "HarryKoresh" )
+	//{
+	//	if( IsInState('PlayerWalking') )
+	//		HarryK(true);
+	//}
+	//else
+	//if( _CurrentString ~= "HarrySuperKoresh" )
+	//{
+	//	DoJump(0);
+	//	velocity = (vector(Rotation) + vect(0,0,1)) * 650;
+	//	HarryK(false);
+	//	HarryK(false);
+	//	HarryK(false);
+	//	HarryK(false);
+	//	HarryK(false);
+	//	HarryK(true);
+	//}
+	//else
+	//if( _CurrentString ~= "HarryKorWalk" )
+	//{
+	//	if( IsInState('PlayerWalking') )
+	//		HarryK(false);
+	//}
 	else
 	if( _CurrentString ~= "HarryDebugModeOn" )
 	{
@@ -1222,15 +1251,7 @@ function KeyDownEvent(optional int Key )
 	}
 }
 
-// function HarryKoresh()
-// {
-	// if( IsInState('PlayerWalking') )
-	// {
-		// HarryK(true);
-	// }
-// }
-
-function HarryK(optional bool k)
+function HarryK(bool k)
 {
 	local sound snd;
 
@@ -1265,8 +1286,8 @@ function HarryK(optional bool k)
 
 	if( k )
 	{
-		theNarrator.FindEmote("EmotiveQuirrel13", snd);
-		PlaySound(snd, SLOT_none);
+		//theNarrator.FindEmote("EmotiveQuirrel13", snd);
+		//PlaySound(snd, SLOT_none);
 		theNarrator.FindEmote("EmotiveQuirrel14", snd);
 		PlaySound(snd, SLOT_none);
 		theNarrator.FindEmote("EmotiveQuirrel15", snd);
@@ -1346,7 +1367,7 @@ function StartBossEncounter( baseBoss   boss
 		basewand(weapon).ChooseSpell( ForceSpellType );//SelectSpell( Class'spellflip' );
 		basewand(weapon).bAutoSelectSpell = false;
 
-		//All right, special hack case.  Sorry bout that.
+		// All right, special hack case.  Sorry bout that.
 		if( ForceSpellType == SPELL_Flipendo )
 		{
 			basewand(weapon).SelectSpell(class'spellFastFlip');
@@ -1367,12 +1388,13 @@ function StartBossEncounter( baseBoss   boss
 		cam.bUseStrafing = false;
 	}
 
-	if( boss != none )
+	if( boss != none && !boss.isA('BathroomTroll') ) //BUG UPDATE (27/02/2020) Unlocked the camera during the troll fight -AdamJD
 	{
-		cam.GotoState( boss.GetCamState() ); //'BossState');
-		//Energy bars?
+		
+			cam.GotoState( boss.GetCamState() ); //'BossState');
+			//Energy bars?
 
-		cam.CameraOffset = boss.GetCameraOffset();
+			cam.CameraOffset = boss.GetCameraOffset();
 	}
 }
 

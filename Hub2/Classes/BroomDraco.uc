@@ -3,6 +3,8 @@
 //=============================================================================
 class BroomDraco extends QuidPlayer;
 
+//Edited by- AdamJD (edited code will have AdamJD by it)
+
 var GameReferee		Referee;				// Object in charge of the rules of the current mini-game
 var BroomHarry		Harry;
 
@@ -78,7 +80,7 @@ function Touch( Actor Other)
 {
 	// Just stumble (don't damage, like what a QuidPlayer would do) and count bumps
 
-	if ( !bHit && Other == Harry && Bumps < BumpsToWin-1 )
+	if ( !bHit && Other == Harry && Bumps < BumpsToWin/*-1*/ ) //makes sure Dracos health goes to 0 -AdamJD
 	{
 		bHit = true;
 		PlayAnim( 'Bumped' );
@@ -86,7 +88,7 @@ function Touch( Actor Other)
 		PlaySound( BumpEmoteSounds[ Rand( NUM_BUMP_EMOTES ) ], SLOT_Talk, , , 2000.0 );	// Radius makes sure he can be heard
 
 		++Bumps;
-		if ( Bumps >= BumpsToWin-1 )
+		if ( Bumps >= BumpsToWin/*-1*/ ) //makes sure Dracos health goes to 0 -AdamJD
 			Referee.Trigger( Self, None );	// Tell referee that Draco almost gives up
 
 		Velocity = vect(0,0,1);

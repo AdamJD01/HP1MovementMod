@@ -4,6 +4,8 @@
 
 class SpellLearnTrigger extends Trigger;
 
+//Edited by- AdamJD (edited code will have AdamJD by it)
+
 var(Spells) class<BaseSpell>	Spell;
 
 var(Spells) class<SpellLearnFX> LearnFXClass[3];
@@ -111,73 +113,93 @@ function Trigger(actor Other, pawn EventInstigator)
 			break;
 		}
 	}
-
-	Cam = Player.Cam;
-	Cam.SaveState();
-	SpellGesture = Spell.default.Gesture;
-
-	// Test
-/*	for (i = 0; i < int(SpellGesture.Points); i ++)
+	
+	//if holding down the spacebar then skip the spell learning -AdamJD
+	if (Player.bSkipKeyPressed == true)
 	{
-		log("Spell lesson points " $i $" of " $int(SpellGesture.Points) $SpellGesture.Points[i].x $SpellGesture.Points[i].y);
+		//copied from code near the end of this script -AdamJD
+		DestroyWand();
+		DestroyTemplate();
+		baseHUD(player.myHUD).DestroyPopup();
+
+		player.iLevelReached = LessonLevel;
+		player.iLessonPoints = TotalHousePointScore;
+
+		Destroy();
+			
+		Player.CutRelease(); //makes skipping the spell learning smooth -AdamJD
 	}
-*/
-	bSaveSmoothing = Player.bMaxMouseSmoothing;
-	Player.bMaxMouseSmoothing = false;
-
-	// We can't fail this lesson, add the spell to Harry now
-	BaseWand(Player.Weapon).AddSpell(Spell);
-
-	// Put player in right state.
-	BaseWand(Player.Weapon).SelectSpell(Spell);
-
-	Player.gotoState('SpellLearning');
-
-	// Halt the player.
-	Player.Velocity = vect(0,0,0);
-	Player.Acceleration = vect(0,0,0);
-	Player.PlayAnim('breathe');
-
-	TempActor = Spawn(class'camtarget');
-	TempActor.GotoState('Free');
-	TempActor.SetLocation(Location + (vec(TemplateDist,0,0) >> Rotation));
-	Cam.DirectionActor = TempActor;
-	// Change the camera mode.
-	Cam.PositionActor = none;
-	CameraDist = 20;	// Hard code for the mo
-	Cam.GotoState('CutState');
-	Cam.SetLocation(Location + (vec(CameraDist,0,0) >> Rotation));
-	Cam.SetRotation(rotator(TempActor.Location - Location));
-
-	// Init spell level.
-	SpellLevel = 0;
-
-	TemplateDrawTime = DrawTime / 4;
-
-	LessonLevel = 0;
-	TotalHousePointScore = 0;
-
-	LessonBlackboard = spawn(class'spellblackboard', 
-		[SpawnLocation] Location + (vec(TemplateDist + 50, 0, 0) >> Rotation) );
-
-/*
-	if (LessonBlackboard == none)
-	{
-		log("Blackboard is none");
-	}
+	
+	//otherwise carry on with the spell learning as normal -AdamJD
 	else
 	{
-		log("Blackboard is OK");
-	}
-*/
+		Cam = Player.Cam;
+		Cam.SaveState();
+		SpellGesture = Spell.default.Gesture;
 
-	if (Teacher != none)
-	{
-		Teacher.GotoState('idle');
-	}
+		// Test
+	/*	for (i = 0; i < int(SpellGesture.Points); i ++)
+		{
+			log("Spell lesson points " $i $" of " $int(SpellGesture.Points) $SpellGesture.Points[i].x $SpellGesture.Points[i].y);
+		}
+	*/
+		bSaveSmoothing = Player.bMaxMouseSmoothing;
+		Player.bMaxMouseSmoothing = false;
 
-	bFirstTime = true;
-	gotoState('Template', 'Init');
+		// We can't fail this lesson, add the spell to Harry now
+		BaseWand(Player.Weapon).AddSpell(Spell);
+
+		// Put player in right state.
+		BaseWand(Player.Weapon).SelectSpell(Spell);
+
+		Player.gotoState('SpellLearning');
+
+		// Halt the player.
+		Player.Velocity = vect(0,0,0);
+		Player.Acceleration = vect(0,0,0);
+		Player.PlayAnim('breathe');
+
+		TempActor = Spawn(class'camtarget');
+		TempActor.GotoState('Free');
+		TempActor.SetLocation(Location + (vec(TemplateDist,0,0) >> Rotation));
+		Cam.DirectionActor = TempActor;
+		// Change the camera mode.
+		Cam.PositionActor = none;
+		CameraDist = 20;	// Hard code for the mo
+		Cam.GotoState('CutState');
+		Cam.SetLocation(Location + (vec(CameraDist,0,0) >> Rotation));
+		Cam.SetRotation(rotator(TempActor.Location - Location));
+
+		// Init spell level.
+		SpellLevel = 0;
+
+		TemplateDrawTime = DrawTime / 4;
+
+		LessonLevel = 0;
+		TotalHousePointScore = 0;
+
+		LessonBlackboard = spawn(class'spellblackboard', 
+			[SpawnLocation] Location + (vec(TemplateDist + 50, 0, 0) >> Rotation) );
+
+	/*
+		if (LessonBlackboard == none)
+		{
+			log("Blackboard is none");
+		}
+		else
+		{
+			log("Blackboard is OK");
+		}
+	*/
+
+		if (Teacher != none)
+		{
+			Teacher.GotoState('idle');
+		}
+
+		bFirstTime = true;
+		gotoState('Template', 'Init');
+	}
 }
 
 function TriggerNext()

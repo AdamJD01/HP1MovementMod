@@ -2,6 +2,8 @@
 
 class spelllumas extends BASESPELL;
 
+//Edited by- AdamJD (edited code will have AdamJD by it)
+
 #exec MESH  MODELIMPORT MESH=SPELLLEVMesh MODELFILE=models\LevProjectile.PSK LODSTYLE=10
 #exec MESH  ORIGIN MESH=SPELLLEVMesh X=0 Y=0 Z=0 YAW=0 PITCH=0 ROLL=0
 #exec ANIM  IMPORT ANIM=SPELLLEVAnims ANIMFILE=models\LevProjectile.PSA COMPRESS=1 MAXKEYS=999999 IMPORTSEQS=1
@@ -13,7 +15,7 @@ class spelllumas extends BASESPELL;
 #exec ANIM DIGEST  ANIM=SPELLLEVAnims VERBOSE
 #exec OBJ LOAD FILE=..\textures\HP_FX.utx PACKAGE=HPBase.FXPackage
 
-#EXEC TEXTURE IMPORT NAME=alohoSpellIcon  FILE=TEXTURES\alohoSpellIcon.bmp GROUP="Icons" FLAGS=2 MIPS=OFF
+//#EXEC TEXTURE IMPORT NAME=alohoSpellIcon  FILE=TEXTURES\alohoSpellIcon.bmp GROUP="Icons" FLAGS=2 MIPS=OFF //not needed -AdamJD
 
 #EXEC MESHMAP SETTEXTURE MESHMAP=SPELLLEVMesh NUM=0 TEXTURE=HPBase.FXPackage.win_p
 
@@ -51,7 +53,7 @@ function PlayIncantateSound(bool bSneaking)
 
 defaultproperties
 {
-     spellIcon=Texture'HPBase.Icons.alohoSpellIcon'
+     //spellIcon=Texture'HPBase.Icons.alohoSpellIcon' //not needed -AdamJD
      spellName="Lumas"
      SpellIncantation="spells12"
      QuietSpellIncantation="spells13"

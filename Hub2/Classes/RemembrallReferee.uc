@@ -3,6 +3,8 @@
 //=============================================================================
 class RemembrallReferee extends GameReferee;
 
+//Edited by- AdamJD (edited code will have AdamJD by it)
+
 var BroomHarry		Harry;
 var BroomDraco		Draco;
 
@@ -240,7 +242,8 @@ state GamePlay
 		// bump away from giving up
 		if ( Other == Draco )
 		{
-			GotoState( 'GameBump' );
+			// GotoState( 'GameBump' ); //not needed -AdamJD
+			GotoState( 'GameWon' ); // state GameBump is bugged with the new code so go staight to GameWon -AdamJD
 		}
 		else
 		{
@@ -269,6 +272,8 @@ begin:
 
 state GameBump
 {
+	//not needed -AdamJD
+	/*
 	function BeginState()
 	{
 		// Start chasing Draco
@@ -315,14 +320,15 @@ state GameBump
 		if ( Other == Draco )
 		{
 			// Turn off hud bump element and reset camera
-
+			Draco.OnBroomBump( Harry );
+			QuidHUD(playerHarry.myHUD).DestroyPopup();
 			// Make Draco throw Remembrall to Harry
 			Harry.SetLookForTarget( None );
 			GotoState( 'GameWon' );
 		}
 		else
 		{
-			// Unexpected trigger event
+			Unexpected trigger event
 			Super.Trigger( Other, EventInstigator );
 		}
 	}
@@ -330,7 +336,7 @@ state GameBump
 	function Timer()
 	{
 		// Never actioned on Draco; go back to regular gameplay
-
+		
 		// Turn off hud bump element and reset camera
 		Harry.cam.gotostate('QuidditchState');
 		Harry.StandardTarget.TargetOffset = vect(100, 0 ,50);
@@ -347,14 +353,19 @@ state GameBump
 		Log( "Exited GameBump State" );
 
 		SetTimer( 0.0, false );
-		Harry.StopFlyingOnPath();
-		--Draco.Bumps;
+		Harry.StopFlyingOnPath(); 
+		// --Draco.Bumps;
 	}
+	*/
 }
 
 state GameWon
 {
 Begin:
+	Draco.OnBroomBump( Harry ); //Bump Draco -AdamJD
+	Harry.SetLookForTarget( None ); //Harry now looks for no target -AdamJD
+	Draco.GotoState('SpinOut'); //play Dracos spin out anim -AdamJD
+	Sleep(2); //this is needed to make sure Draco appears in the beaten cutscene -AdamJD
 	// Go to Win cutscene
 	Harry.BossTarget = none;
 	TriggerEvent( 'Win', self, None );

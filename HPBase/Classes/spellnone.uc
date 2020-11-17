@@ -2,14 +2,18 @@
 
 class spellnone extends BASESPELL;
 
+//Edited by- AdamJD (edited code will have AdamJD by it)
+
+//not needed -AdamJD
+/*
 #exec MESH  MODELIMPORT MESH=SPELLLEVMesh MODELFILE=models\LevProjectile.PSK LODSTYLE=10
 #exec MESH  ORIGIN MESH=SPELLLEVMesh X=0 Y=0 Z=0 YAW=0 PITCH=0 ROLL=0
 #exec ANIM  IMPORT ANIM=SPELLLEVAnims ANIMFILE=models\LevProjectile.PSA COMPRESS=1 MAXKEYS=999999 IMPORTSEQS=1
 #exec MESHMAP   SCALE MESHMAP=SPELLLEVMesh X=2.0 Y=2.0 Z=2.0
 #exec MESH  DEFAULTANIM MESH=SPELLLEVMesh ANIM=SPELLLEVAnims
 
-// Digest and compress the animation data. Must come after the sequence declarations.
-// 'VERBOSE' gives more debugging info in UCC.log 
+Digest and compress the animation data. Must come after the sequence declarations.
+'VERBOSE' gives more debugging info in UCC.log 
 #exec ANIM DIGEST  ANIM=SPELLLEVAnims VERBOSE
 #exec OBJ LOAD FILE=..\textures\HP_FX.utx PACKAGE=HPBase.FXPackage
 
@@ -18,8 +22,9 @@ class spellnone extends BASESPELL;
 #EXEC MESHMAP SETTEXTURE MESHMAP=SPELLLEVMesh NUM=0 TEXTURE=HPBase.FXPackage.win_p
 
 
-// Import the pattern
+Import the pattern
 #exec PATTERN IMPORT PATTERN=FlipPattern FILE=Patterns/Flipendo.hpg
+*/
 
 function PostBeginPlay()
 {
@@ -29,13 +34,14 @@ function PostBeginPlay()
 
 defaultproperties
 {
-     spellIcon=Texture'HPBase.Icons.alohoSpellIcon'
-     spellName="Flipendo"
+     //spellIcon=Texture'HPBase.Icons.alohoSpellIcon' //not needed -AdamJD
+     //spellName="Flipendo" //not needed -AdamJD
      CastSound=Sound'HPSounds.magic_sfx.spell_dud'
-     flyParticleEffectClass=Class'HPParticle.SmokeExplo_03'
-     Gesture=Gesture'HPBase.FlipPattern'
+     //flyParticleEffectClass=Class'HPParticle.SmokeExplo_03' //not needed -AdamJD
+     //Gesture=Gesture'HPBase.FlipPattern' //not needed -AdamJD
      ImpactSound=None
-     LifeSpan=0.3
-     Style=STY_Translucent
-     Texture=Texture'HPParticle.hp_fx.Particles.Smoke5'
+     //LifeSpan=0.3 //retail default prop -AdamJD
+	 LifeSpan=0.01 //AdamJD
+     //Style=STY_Translucent //not needed -AdamJD
+     //Texture=Texture'HPParticle.hp_fx.Particles.Smoke5' //not needed -AdamJD
 }

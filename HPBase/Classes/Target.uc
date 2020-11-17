@@ -1,8 +1,10 @@
 //===============================================================================
-//  [FlowerVase] 
+//  [Target] 
 //===============================================================================
 
 class target extends ParticleFX;
+
+//Edited by- AdamJD (edited code will have AdamJD by it)
 
 #exec MESH  MODELIMPORT MESH=ModTarget1Mesh MODELFILE=models\ModTarget1.PSK LODSTYLE=10
 #exec MESH  ORIGIN MESH=ModTarget1Mesh X=0 Y=0 Z=0 YAW=0 PITCH=0 ROLL=0
@@ -47,6 +49,14 @@ var	float		TargetSize;
 
 var bool		bNoMove;
 
+//AdamJD vars
+var vector	vGestureOffset;	
+var bool 	bIsLockedOn; 
+var	bool	bInvisibleCursor;	
+var	float	fLOS_Distance;	
+
+
+
 auto state seeking
 {
 
@@ -64,9 +74,9 @@ auto state seeking
 				break;
 			}
 		}
-		TargetCounter = 0;
+		TargetCounter = 0; 
 
-		bNoMove = true;
+		//bNoMove = true; //not needed -AdamJD
 
 //		PlaySound(sound'HPSounds.magic_sfx.spell_aim');
 
@@ -86,25 +96,25 @@ auto state seeking
 			TargetRotation = rotator(TraceEnd);
 			TargetPitch = TargetRotation.Pitch;
 
-//			TargetPitch = 0;
+//			TargetPitch = 0; 
 			TargetYaw = 0;
 		}
 
 		// @PAB added target glow
 
-/*		if(baseWand(p.weapon).curSpell != class'spelldud')
-		{*/
+		//if(baseWand(p.weapon).curSpell != class'spelldud')
+		//{
 			targetGlowObjRed=spawn(class'targetglow',,,Location);
 			targetGlowObjRed.SetColour(255, 0, 0);
 			targetGlowObjBlue=spawn(class'targetglow',,,Location);
 			targetGlowObjBlue.SetColour(0, 255, 255);
-/*		}*/
+		//}
 
 /*		if (SpellGesture != none)
 		{
 			log("Spell " $string(SpellGesture.Name));
-		}
-*/
+		}*/
+		
 		// AE:
 		StopEffect();
 	}
@@ -126,8 +136,8 @@ auto state seeking
 		setTarget(Deltatime);
 	}
 
-	function setTarget(float deltatime)
-	{
+function setTarget(float deltatime)
+{
 		local rotator		TargetRot;
 		local vector		TraceStart;
 		local vector		TraceEnd;
@@ -143,6 +153,9 @@ auto state seeking
 
 		//@PAB test
 		local	actor	HitActor;
+		
+		//AdamJD local int
+		local int TargetPitchX;
 
 		Colorstart.base.r=13;
 		Colorstart.base.g=108;
@@ -213,26 +226,31 @@ auto state seeking
 
 		TargetRot = p.rotation;
 		TargetRot.pitch = TargetPitch;
-		TargetRot.yaw = TargetRot.yaw + TargetYaw;
+		TargetRot.yaw += TargetYaw;
 
 //		BaseHUD(p.MyHUD).DebugVala = TargetPitch;
 
-		TraceStart = p.Location;
+		//TraceStart = p.Location; //old tracestart -AdamJD
+		TraceStart = p.cam.CamTarget.Location; //set tracestart to the cam target location -AdamJD
 
 		TraceEnd = Vector(TargetRot);
 		Cushion = TraceEnd;
+		
+		//set TargetPitchX to TargetPitch -AdamJD
+		TargetPitchX = TargetPitch;
 
 		//Right now, this is only used by the Devil's snare level.
 		if( p.bExtendedTargetting )
-			TraceEnd = TraceEnd * 1024;//512;
+			TraceEnd *= 1024;//512;
 		else
-			TraceEnd = TraceEnd * 512;
+			TraceEnd *= 512; 
 
-		TraceEnd = TraceEnd + p.Location;
+		// TraceEnd = TraceEnd + p.Location; //old traceend -AdamJD
+		TraceEnd = p.cam.CamTarget.Location + p.cam.vForward * (p.cam.fLookAtDistance + fLOS_Distance); //set traceend to the cam target location and try to keep spell locked on -AdamJD
 
 		PossibleVictim = none;
-
-/*		if(baseWand(p.weapon).curSpell== class'spelldud')
+		
+		/*if(baseWand(p.weapon).curSpell== class'spelldud')
 		{
 			Colorstart.base.r=0;
 			Colorstart.base.g=0;
@@ -254,11 +272,16 @@ auto state seeking
 			{
 				HitLocation = TraceEnd;
 			}
-		}
-*/
+		}*/
+		
 		foreach TraceActors(class 'actor', HitActor, HitLocation, HitNormal, TraceEnd, TraceStart)
 		{
 //			log(string(HitActor.name) $" " $vsize(HitLocation - TraceStart));
+
+			if( HitActor.IsA('baseHarry') || HitActor.IsA('Harry') || HitActor.IsA('BaseCam') || HitActor.IsA('CamTarget') )
+			{
+				continue; //ignore Harry and camera stuff -AdamJD
+			}
 
 			if (HitActor.bprojtarget || HitActor.bBlockActors )
 			{
@@ -284,19 +307,21 @@ auto state seeking
 		{
 			if (possiblevictim.bprojtarget == true)
 			{
-/*				Colorstart.base.r=169;
+			/*Colorstart.base.r=169;
 				Colorstart.base.g=5;
 				Colorstart.base.b=5;
 
 				ColorEnd.base.r=0;
 				ColorEnd.base.g=0;
-				ColorEnd.base.b=0;
-*/
+				ColorEnd.base.b=0;*/
+
 				victim = possiblevictim;
 
 				TargetArea = victim.GetWorldCollisionBox(true);
 				HitLocation = ((TargetArea.Max - TargetArea.Min) / 2) + TargetArea.Min;
-
+				
+				//retail original code -AdamJD
+				/*
 				if (possiblevictim.CollideType == CT_Box)
 				{
 					radius = possiblevictim.CollisionWidth;
@@ -305,8 +330,34 @@ auto state seeking
 				{
 					radius = possiblevictim.collisionradius;
 				}
-				Cushion = Cushion * (radius / 2);
-				HitLocation = HitLocation - Cushion;
+				*/
+				
+				//AdamJD code start
+				//get victim width and setup cursor locking onto the victim
+				if(victim.CollideType == CT_Box || victim.CollideType == CT_AlignedCylinder  || victim.CollideType == CT_OrientedCylinder || victim.CollisionWidth == 0)
+				{
+					cushion = vec(victim.CollisionRadius, victim.CollisionWidth, victim.CollisionHeight);
+					radius = victim.CollisionWidth;
+					TargetPitchX = radius * p.SmoothMouseX; 
+					TargetPitch = radius * p.SmoothMouseY; 
+			
+					vGestureOffset = -(vec(radius, 0, 0));
+				}
+				//get victim radius and setup cursor locking onto the victim
+				else
+				{
+					cushion = vec(victim.CollisionRadius, victim.CollisionRadius, victim.CollisionHeight);
+					radius = victim.collisionradius;
+					TargetPitchX = radius * p.SmoothMouseX; 
+					TargetPitch = radius * p.SmoothMouseY; 
+					
+					vGestureOffset = normal(p.location - victim.location) * radius; 
+				}
+				//AdamJD code end
+
+				Cushion *= (radius / 2); 
+				
+				HitLocation -= Cushion; 
 				victim.Targeted();
 
 				LockOn(victim);
@@ -331,80 +382,131 @@ auto state seeking
 			TargetGlowObjBlue.SetTargetUnlock();
 			HitLocation = TraceEnd;
 			HitLocation -= Cushion;
-
+			
 			SetFloatTarget();
 			TargetGlowObjRed.SetFloatTarget();
 			TargetGlowObjBlue.SetFloatTarget();
 		}
-
+		
 		movesmooth(HitLocation - location);
 		TargetGlowObjRed.MoveSmooth(HitLocation - TargetGlowObjRed.location);
 		TargetGlowObjBlue.MoveSmooth(HitLocation - TargetGlowObjBlue.location);
-
-/*		BaseHUD(p.MyHUD).DebugValx = HitLocation.x;
+		
+		/*BaseHUD(p.MyHUD).DebugValx = HitLocation.x;
 		BaseHUD(p.MyHUD).DebugValy = HitLocation.y;
 		BaseHUD(p.MyHUD).DebugValz = HitLocation.z;*/
+		
+		//lock cursor onto victim -AdamJD
+		if (bIsLockedOn == true) 
+		{
+			//log("locked onto victim test"); 
+			TargetPitchX = p.SmoothMouseX;
+			TargetPitch =  p.SmoothMouseY;
+			TargetRot = victim.rotation;
+		}
 	}
-
+	
 	function LockOn(actor TargetActor)
 	{
-		local BoundingBox	TargetArea;
+		local BoundingBox	TargetArea; 
 		local vector		TargetCentre;
 		local float			fTargetWidth;
 		local float			fTargetHeight;
 		local float			fTargetDepth;
-
+		local int TargetPitchX; //AdamJD local int
+		
 		TargetArea = TargetActor.GetWorldCollisionBox(true);
-
+		
 		TargetCentre = ((TargetArea.Max -  TargetArea.Min) / 2) + TargetArea.Min + TargetActor.CentreOffset;
+		fTargetDepth = abs(TargetArea.Max.x - TargetArea.Min.x) * TargetActor.SizeModifier;
 		fTargetWidth = abs(TargetArea.Max.y - TargetArea.Min.y) * TargetActor.SizeModifier;
 		fTargetHeight = abs(TargetArea.Max.z - TargetArea.Min.z) * TargetActor.SizeModifier;
-		fTargetDepth = abs(TargetArea.Max.x - TargetArea.Min.x);
-
-		SetTargetLock(fTargetWidth, fTargetHeight, fTargetDepth);
-		TargetGlowObjRed.SetTargetLock(fTargetWidth, fTargetHeight, fTargetDepth);
-		TargetGlowObjBlue.SetTargetLock(fTargetWidth, fTargetHeight, fTargetDepth);
-
+		
+		SetTargetLock(fTargetWidth, fTargetHeight, fTargetDepth); 
+		SetRotation(TargetActor.rotation);
+		//not needed -AdamJD
+		//TargetGlowObjRed.SetTargetLock(fTargetWidth, fTargetHeight, fTargetDepth);
+		//TargetGlowObjBlue.SetTargetLock(fTargetWidth, fTargetHeight, fTargetDepth);
+		
 		baseWand(p.weapon).ChooseSpell(victim.eVulnerableToSpell);
 
+		BaseHUD(p.MyHUD).DebugValX = TargetActor.SizeModifier; //get debug X value -AdamJD
 		BaseHUD(p.MyHUD).DebugValY = TargetActor.SizeModifier;
-
+		BaseHUD(p.MyHUD).DebugValZ = TargetActor.SizeModifier; //get debug Z value -AdamJD
+		
+		TargetPitchX = TargetPitch; //set TargetPitchX to TargetPitch -AdamJD
+		
 		// Get Spell gesture
-
-		if (baseWand(p.Weapon).curSpell != none && baseWand(p.weapon).curSpell != class'spelldud')
+		if (baseWand(p.Weapon).curSpell != none && baseWand(p.weapon).curSpell != class'spelldud') //&& (!TargetActor.IsA('baseHarry') || !TargetActor.IsA('Harry') || !TargetActor.IsA('baseWand') || !TargetActor.IsA('BaseCam') || !TargetActor.IsA('CamTarget') || TargetActor != p || TargetActor != Owner) )
 		{
-			SpellGesture = baseWand(p.Weapon).curSpell.default.gesture;
+			 SpellGesture = baseWand(p.Weapon).curSpell.default.gesture;
 		}
-
+		
 		if (FXVisible == false)
 		{
-			if (victim.isa('basechar'))
+			if (victim.isa('basechar') ) 
 			{
 				if (basechar(victim).bGestureOnTargeting)
 				{
 					FXVisible = true;
+					bIsLockedOn = true; //cursor is locked on -AdamJD
 					DrawSpellFX(TargetCentre, fTargetWidth, fTargetDepth);
+					vGestureOffset = -(vec(fTargetWidth, 0, 0)); //get GestureOffset -AdamJD
+					TargetPitchX = p.SmoothMouseX; //set TargetPitch to X mouse axis -AdamJD
+					TargetPitch = p.SmoothMouseY;  //set TargetPitch to Y mouse axis -AdamJD
 				}
 				else
 				{
-					// save location of spell, but don't use it
-
+					//save location of spell, but don't use it
+					bIsLockedOn = true; //cursor is locked on -AdamJD
 					TargetHitLocation = TargetCentre;
 					TargetSize = fTargetWidth;
+					vGestureOffset = normal(p.location - TargetActor.location) * fTargetWidth; //get GestureOffset -AdamJD
+					TargetPitchX = p.SmoothMouseX; //set TargetPitch to X mouse axis -AdamJD
+					TargetPitch = p.SmoothMouseY;  //set TargetPitch to Y mouse axis -AdamJD
 				}
 			}
-			else
+			else 
 			{
-				FXVisible = true;
-				DrawSpellFX(TargetCentre, fTargetWidth, fTargetDepth);
-			}
+					FXVisible = true;
+					bIsLockedOn = true; //cursor is locked on -AdamJD 
+					DrawSpellFX(TargetCentre, fTargetWidth, fTargetDepth);
+					vGestureOffset = -(vec(fTargetWidth, 0, 0)); //get GestureOffset -AdamJD
+					TargetPitchX = p.SmoothMouseX; //set TargetPitch to X mouse axis -AdamJD
+					TargetPitch = p.SmoothMouseY;  //set TargetPitch to Y mouse axis -AdamJD
+			}	
 		}
+
 		else
 		{
-			// rotate FX
-//			RotateSpellFX();
+			//rotate FX
+			//RotateSpellFX();
 		}
-	}
+		
+		
+		//lock cursor onto target -AdamJD
+		if (bIsLockedOn == true)
+		{
+			//log("locked onto target test"); 
+			
+			//get target width and setup cursor locking onto the target
+			if(TargetActor.CollideType == CT_Box || TargetActor.CollideType == CT_AlignedCylinder  || TargetActor.CollideType == CT_OrientedCylinder || TargetActor.CollisionWidth == 0)
+			{
+				TargetCentre = vec(TargetActor.CollisionRadius, TargetActor.CollisionWidth, TargetActor.CollisionHeight);
+				fTargetWidth = TargetActor.CollisionWidth;
+				TargetPitchX = p.SmoothMouseX; 
+				TargetPitch =  p.SmoothMouseY; 
+			}
+			//get target radius and setup cursor locking onto the target
+			else
+			{
+				TargetCentre = vec(TargetActor.CollisionRadius, TargetActor.CollisionRadius, TargetActor.CollisionHeight);
+				fTargetWidth = TargetActor.CollisionRadius;
+				TargetPitchX = p.SmoothMouseX; 
+				TargetPitch = p.SmoothMouseY; 
+			}
+		}
+}
 
 	function RotateSpellFX()
 	{
@@ -428,7 +530,7 @@ auto state seeking
 
 	function SetTargetLock(float TargetWidth, float TargetHeight, float TargetDepth)
 	{
-	     ParticlesPerSec.Base=10.000000;
+		 ParticlesPerSec.Base=10.000000;
 		 SourceWidth.Base=TargetWidth;
 	     SourceHeight.Base=TargetHeight;
 		 SourceDepth.Base=TargetDepth;
@@ -541,7 +643,7 @@ auto state seeking
 					Winfx.ParticlesMax = 200;
 				}
 
-/*	BaseHUD(p.MyHUD).Debugstring = string(victim.name);
+	/*BaseHUD(p.MyHUD).Debugstring = string(victim.name);
 	BaseHUD(p.MyHUD).DebugVala = TargetSize;
 	BaseHUD(p.MyHUD).DebugValx = TargetHitLocation.x;
 	BaseHUD(p.MyHUD).DebugValy = TargetHitLocation.y;
@@ -554,7 +656,7 @@ auto state seeking
 		}
 	}
 
-/*	begin:
+	/*begin:
 		circle.pitch=0;
 		circle.yaw=0;
 		circle.roll=0;
@@ -569,8 +671,8 @@ auto state seeking
 		
 //	seekloop:
 //		sleep(0.001);
-//	goto 'seekloop';
-*/
+//	goto 'seekloop';*/
+
 
 }
 
@@ -583,15 +685,15 @@ auto state seeking
 
 	// Spawn an appropriate particle system in front of us.
 
-/*		if (abs(vsize(HitLocation - p.location)) > abs(vsize(HitLocation - (vec(TargetSize / 2,0,0) << victim.Rotation) - p.Location)))
+		/*if (abs(vsize(HitLocation - p.location)) > abs(vsize(HitLocation - (vec(TargetSize / 2,0,0) << victim.Rotation) - p.Location)))
 		{
 			SpellLoc = HitLocation - (vec(TargetSize / 2,0,0) << victim.Rotation);
 		}
 		else
 		{
 			SpellLoc = HitLocation + (vec(TargetSize / 2,0,0) << victim.Rotation);
-		}
-*/
+		}*/
+
 
 
 		// AE:
@@ -611,20 +713,20 @@ auto state seeking
 //		}
 
 //	BaseHUD(p.MyHUD).Debugstring = string(victim.name);
-/*	BaseHUD(p.MyHUD).DebugValx = HitLocation.x;
+	/*BaseHUD(p.MyHUD).DebugValx = HitLocation.x;
 	BaseHUD(p.MyHUD).DebugValy = HitLocation.y;
 	BaseHUD(p.MyHUD).DebugValz = HitLocation.z;
 
 	BaseHUD(p.MyHUD).DebugVala2 = TargetSize;
 	BaseHUD(p.MyHUD).DebugValx2 = SpellLoc.x;
 	BaseHUD(p.MyHUD).DebugValy2 = SpellLoc.y;
-	BaseHUD(p.MyHUD).DebugValz2 = SpellLoc.z;
-*/
-//		Winfx = p.Spawn( class'Reward01',
+	BaseHUD(p.MyHUD).DebugValz2 = SpellLoc.z; */
+
+ //		Winfx = p.Spawn( class'Reward01',
 		Winfx = victim.Spawn( baseWand(p.Weapon).curSpell.default.GestureParticleEffectClass,
 			[SpawnLocation] SpellLoc);
-/*		Winfx = victim.Spawn( class'Les_SpellShape',
-			[SpawnLocation] SpellLoc);*/
+		// Winfx = victim.Spawn( class'Les_SpellShape',
+			// [SpawnLocation] SpellLoc);
 //			[SpawnLocation] HitLocation);
 //			[SpawnLocation] p.location + (vec(vSize(location - p.location),0,0) >> p.Rotation) );
 
@@ -637,14 +739,14 @@ auto state seeking
 		Winfx.Period.Base = 0.f;
 		Winfx.Period.Rand = 1.f;
 		Winfx.ParticlesMax = 0;
-//		Winfx.SizeWidth.Base = 8.000000;
-//		Winfx.SizeLength.Base = 8.000000;
+		// Winfx.SizeWidth.Base = 8.000000;
+		// Winfx.SizeLength.Base = 8.000000;
 
-//		Winfx.SetOwner(victim);
-//		Winfx.SetPhysics(PHYS_Trailer);
-//		Winfx.bTrailerSameRotation = true;
+		// Winfx.SetOwner(victim);
+		// Winfx.SetPhysics(PHYS_Trailer);
+		// Winfx.bTrailerSameRotation = true;
 
-//		Winfx.Lifetime.Base = 3.0;
+		// Winfx.Lifetime.Base = 3.0;
 	}
 
 
@@ -689,9 +791,10 @@ function Destroyed()
 //	 Textures(0)=Texture'HPParticle.particle_fx.soft_pfx'
 //     Textures(0)=Texture'HPParticle.hp_fx.Particles.Sparkle_1'
 
+// --------------------------------------------------------------------------------------------
 defaultproperties
 {
-     ParticlesPerSec=(Base=20)
+	 ParticlesPerSec=(Base=20)
      SourceWidth=(Base=100)
      SourceHeight=(Base=100)
      SourceDepth=(Base=100)
@@ -710,4 +813,5 @@ defaultproperties
      Textures(0)=Texture'HPParticle.hp_fx.Particles.Sparkle_1'
      Rotation=(Pitch=16640)
      bRotateToDesired=True
+	 fLOS_Distance=512 //added by me -AdamJD
 }

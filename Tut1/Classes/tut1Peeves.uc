@@ -1,6 +1,6 @@
 class tut1Peeves expands peeves;
 
-
+//Edited by- AdamJD (edited code will have AdamJD by it)
 
 var float hitCount;
 var sound peevesVoice;
@@ -239,7 +239,7 @@ begin:
 	findcam();
 	Opacity=1;
 	hugcamera=true;
-	pcam.gotostate('cutstate');
+	//pcam.gotostate('cutstate'); //the camera locks when hitting Peeves in the new camera code so I've turned this off -AdamJD
 	SetPhysics(PHYS_rotating);
 //	PlaySound(sound 'HPSounds.peeves_sfx.pee_009', SLOT_Talk, 3.2, false, 2000.0, 1.0);
 

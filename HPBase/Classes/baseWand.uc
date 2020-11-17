@@ -2,6 +2,9 @@
 // baseWand
 //=============================================================================
 class baseWand extends Weapon;
+
+//Edited by- AdamJD (edited code will have AdamJD by it)
+
 #exec MESH  MODELIMPORT MESH=WandMesh MODELFILE=models\Wand.PSK LODSTYLE=10
 #exec MESH  ORIGIN MESH=WandMesh X=0 Y=0 Z=0 YAW=0 PITCH=0 ROLL=0
 #exec ANIM  IMPORT ANIM=WandAnims ANIMFILE=models\Wand.PSA COMPRESS=1 MAXKEYS=999999 IMPORTSEQS=1
@@ -17,11 +20,23 @@ class baseWand extends Weapon;
 #EXEC MESHMAP SETTEXTURE MESHMAP=WandMesh NUM=0 TEXTURE=WandTex0
 
 
+//AdamJD vars
+var bool                bInstantFire;
+var baseHarry			playerHarry;
+var float				fAutoHitDistance;
+var particleFX			fxChargeParticles;	
+var class<particleFX>	fxChargeParticleFXClass;
+var bool				bSpellCharges;			
+var float				fSpellCharge;			
+var float               fSpellChargeTime;      
+var float               fSpellChargeTimeSpan;   
+var float               fSpellChargeStartScale; 
+var float               fSpellChargeEndScale;  
 
 
 var() int HitDamage;
-var Pickup Amp;
-var bool bBotSpecialMove;
+//var Pickup Amp; //not needed -AdamJD
+//var bool bBotSpecialMove; //not needed -AdamJD
 
 var bool bAutoSelectSpell;
 var bool bUseNoSpell;
@@ -34,8 +49,10 @@ var class<baseSpell> spellList[16];
 var particleFX wandEffect;
 var baseProps testWand;
 
-var float maxMana;
-var float curMana;
+//not needed -AdamJD
+// var float maxMana;
+// var float curMana;
+
 var bool bUseMana;
 var bool bCasting;
 
@@ -52,14 +69,17 @@ local vector v;
 local rotator r;
 
 	super.tick(deltaTime);
+	//not needed -AdamJD
+	/*
 	if(bUseMana)
 		{
 		curMana+=deltaTime*5;
 		if(curMana>maxMana)
 			curMana=maxMana;
 		}
+	*/
 
-	/*
+	
 	if(wandEffect!=None && pawn(owner) != none && pawn(owner).Weapon==self)
 		{
 		r=pawn(owner).weaponRot;
@@ -70,7 +90,7 @@ local rotator r;
 			wandEffect.ParticlesPerSec.Base=wandEffect.default.ParticlesPerSec.Base;
 		else
 			wandEffect.ParticlesPerSec.Base=4.1;
-		}*/
+		}
 }
 
 function BecomeItem()
@@ -100,7 +120,6 @@ local int i;
 
 event BeginPlay()
 {
-
 	/*
 	if(wandEffect==None)
 		{
@@ -108,7 +127,7 @@ event BeginPlay()
 		wandEffect.ParticlesPerSec.Base=0;
 		wandEffect.bVelocityRelative=false;
 		}
-		*/
+	*/	
 
 	bUseNoSpell = true;
 }
@@ -135,8 +154,6 @@ function SelectSpell(class<baseSpell> spell)
 {
 	curSpell=spell;
 }
-
-
 
 function ChooseSpell(ESpellType Spell)
 {
@@ -216,8 +233,16 @@ function CastSpell(Actor target)
 	local vector	HitLocation, HitNormal, Start; 
 	local sound		outSound;
 	local string	Label, outText, Language;
+	local bool		bUseWeaponForProjRot; //AdamJD
 
-	bPointing=True;//whats this for??
+	bPointing=True;//whats this for?? 
+	
+	//AdamJD
+	if( target == self )
+	{
+		bUseWeaponForProjRot = true;
+		target = none;
+	}
 
 	// Enable this for the PS1 Conversion O' Joy
 	if(bAutoSelectSpell)
@@ -241,6 +266,8 @@ function CastSpell(Actor target)
 
 	//AE: Moved incantation to after 'LastCastedSpell' is set, because it's used.
 
+	//not needed -AdamJD
+	/*
 	if(bUseMana)
 	{
 		if(curMana>=curSpell.default.manaCost)
@@ -248,6 +275,7 @@ function CastSpell(Actor target)
 		else
 			return;
 	}
+	*/
 
 	LastCastedSpell=baseSpell( ProjectileFire(curSpell, AltProjectileSpeed, false) );
 	LastCastedSpell.target = target;
@@ -280,12 +308,23 @@ function CastSpell(Actor target)
 			}
 		}
 	}
-
+	
+	//not needed -AdamJD
+	/*
 	//See if there's a matching object we should get rid of.  Also set curSpell to none.
 	if( DestroyThisOnCast != none) //!= none  &&  curSpell(DestroyThisOnCast) != none )
 	{
 		DestroyThisOnCast.Destroy();
 		SelectSpell(none);
+	}
+	*/
+	
+	//HP2 code -AdamJD
+	if( target.IsA('Pawn') && 
+		vsize(location - target.location) < fAutoHitDistance )
+	{
+		// We are really close to our target so AutoHit it!
+		LastCastedSpell.ProcessTouch( target, target.location );
 	}
 
 	//	Owner.PlaySound(AltFireSound, SLOT_None,Pawn(Owner).SoundDampening*4.0);
@@ -298,10 +337,25 @@ function CastSpell(Actor target)
 
 function Texture GetSpellIcon()
 {
-	if(curSpell!=None)
-		return curSpell.Default.spellIcon;
-	else
-		return None;
+	//not needed -AdamJD
+	// if(curSpell!=None)
+		// return curSpell.Default.spellIcon;
+	// else
+		// return None;
+}
+
+//HP2 code -AdamJD
+function ScaleParticles( ParticleFX FX, float scale )
+{
+	FX.ParticlesPerSec.Base		= FX.default.ParticlesPerSec.Base	* scale;
+	FX.SourceHeight.Base		= FX.default.SourceHeight.Base		* scale;
+	FX.SourceWidth.Base			= FX.default.SourceWidth.Base		* scale;
+	FX.SourceDepth.Base			= FX.default.SourceDepth.Base		* scale;
+	FX.SizeWidth.Base			= FX.default.SizeWidth.Base			* scale;
+	FX.SizeLength.Base			= FX.default.SizeLength.Base		* scale;
+	FX.AngularSpreadWidth.Base	= FX.default.AngularSpreadWidth.Base* scale;
+    FX.AngularSpreadHeight.Base	= FX.default.AngularSpreadHeight.Base*scale;
+	FX.SpinRate.Base			= FX.default.SpinRate.Base			* scale;
 }
 
 function inventory SpawnCopy( pawn Other )
@@ -317,16 +371,16 @@ function inventory SpawnCopy( pawn Other )
 
 function AltFire( float Value )
 {
-	local actor HitActor;
-	local vector HitLocation, HitNormal, Start; 
-
+	//not needed -AdamJD
+	// local actor HitActor;
+	// local vector HitLocation, HitNormal, Start; 
 
 	if ( PlayerPawn(Owner) != None )
 		{
 		PlayerPawn(Owner).ClientInstantFlash( -0.4, vect(0, 0, 800));
 		PlayerPawn(Owner).ShakeView(ShakeTime, ShakeMag, ShakeVert);
 		}
-	bPointing=True;
+	bPointing=True; 
 	ProjectileFire(AltProjectileClass, AltProjectileSpeed, bAltWarnTarget);
 
 	Owner.PlaySound(AltFireSound, SLOT_None,Pawn(Owner).SoundDampening*4.0);
@@ -337,7 +391,6 @@ function AltFire( float Value )
 }
 
 
-
 function float RateSelf( out int bUseAltMode )
 {
 	return 99.0;	//wand is always the best weapon. well, its the _only_ weapon. 
@@ -345,10 +398,12 @@ function float RateSelf( out int bUseAltMode )
 
 function BecomePickup()
 {
-	Amp = None;
+	//Amp = None; //not needed -AdamJD
 	Super.BecomePickup();
 }
 
+//not needed -AdamJD
+/*
 function Timer()
 {
 	local actor targ;
@@ -365,14 +420,14 @@ function Timer()
 	targ = Pawn(Owner).PickTarget(bestAim, bestDist, FireDir, Owner.Location);
 	if ( Pawn(targ) != None )
 	{
-		bPointing = true;
+		bPointing = true; 
 		Pawn(targ).WarnTarget(Pawn(Owner), 300, FireDir);
 		SetTimer(1 + 4 * FRand(), false);
 	}
 	else 
 	{
 		SetTimer(0.5 + 2 * FRand(), false);
-		bPointing = false;
+		bPointing = false; 
 	}
 }	
 
@@ -383,6 +438,7 @@ function Finish()
 
 	Super.Finish();
 }
+*/
 
 ///////////////////////////////////////////////////////
 function PlayFiring()
@@ -394,11 +450,11 @@ function PlayFiring()
 
 function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed, bool bWarn)
 {
-	local Vector Start, X,Y,Z;
-
+	local Vector Start, X,Y,Z; 
+		
 	Owner.MakeNoise(Pawn(Owner).SoundDampening);
 
-//Log("Projectile fire owner:" $owner $" Rotation:" $Pawn(owner).ViewRotation);
+Log("Projectile fire owner:" $owner $" Rotation:" $Pawn(owner).ViewRotation);
 	
 	GetAxes(Pawn(owner).ViewRotation,X,Y,Z);
 	Start = Owner.Location + CalcDrawOffset() + FireOffset.X * X + FireOffset.Y * Y + FireOffset.Z * Z; 
@@ -407,12 +463,10 @@ function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed,
 	if(ProjClass==Class'spellEcto')
 		AdjustedAim = pawn(owner).AdjustToss(ProjSpeed, Start, 0, True, (bWarn || (FRand() < 0.4)));	
 	else
-		AdjustedAim = pawn(owner).AdjustAim(ProjSpeed, Start, AimError, True, bWarn);	
+		AdjustedAim = pawn(owner).AdjustAim(ProjSpeed, Start, /*AimError*/ 0, True, bWarn);	
 	bSplashDamage = true;
 	return(Spawn(ProjClass,,, Start,AdjustedAim));
-
 }
-
 
 
 function SpawnEffect(Vector DVector, int NumPoints, rotator SmokeRotation, vector SmokeLocation)
@@ -434,7 +488,7 @@ state Idle
 
 	function BeginState()
 	{
-		bPointing = false;
+		bPointing = false; 
 		SetTimer(0.5 + 2 * FRand(), false);
 		Super.BeginState();
 		if (Pawn(Owner).bFire!=0) Fire(0.0);
@@ -453,13 +507,14 @@ defaultproperties
 {
      HitDamage=35
      bAutoSelectSpell=True
-     maxMana=100
-     curMana=50
+	 //not needed -AdamJD
+     //maxMana=100
+     //curMana=50
      PickupAmmoCount=200
      bSplashDamage=True
      FireOffset=(Y=-6,Z=-7)
      AltProjectileClass=Class'HPBase.baseSpell'
-     AimError=0
+     //AimError=0 //not needed -AdamJD
      AltRefireRate=0.7
      DeathMessage="%k inflicted mortal damage upon %o with the %w."
      AutoSwitchPriority=4
@@ -473,4 +528,6 @@ defaultproperties
      CollisionRadius=28
      CollisionHeight=8
      Mass=50
+	 bUseMana=False //AdamJD
+	 fAutoHitDistance=128 //AdamJD
 }

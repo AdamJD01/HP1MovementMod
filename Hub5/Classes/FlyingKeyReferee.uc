@@ -3,6 +3,7 @@
 //=============================================================================
 class FlyingKeyReferee extends QuidditchReferee;
 
+//Edited by- AdamJD (edited code will have AdamJD by it)
 
 //-------------------------------------------------------------------------------------------
 // PostBeginPlay()
@@ -61,6 +62,10 @@ Begin:
 	// Go to Win cutscene
 	Sleep( 3.0 );
 	TriggerEvent( 'Win', self, None );
+	//makes broomHarry and snitch invisible during the end cutscene -AdamJD
+	Sleep(2);
+	Harry.bHidden = true;
+	Snitch.bHidden = true;
 
 loop:
 	Sleep( 0.1 );
@@ -93,6 +98,18 @@ state GameCatch
 	{
 		super.BeginState();
 		QuidHud( Harry.MyHud ).SetHUDGameType(HUDG_FLYINGKEYS);
+	}
+	
+	//go back to chasing the key if the player didn't get the key in Harrys hand -AdamJD
+	function Timer()
+	{
+		super.Timer();
+	}
+	
+	//go back to chasing the key if the player didn't get the key in Harrys hand -AdamJD
+	function EndState()
+	{
+		super.EndState();
 	}
 }
 

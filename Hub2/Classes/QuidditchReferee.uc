@@ -3,6 +3,8 @@
 //=============================================================================
 class QuidditchReferee extends GameReferee;
 
+//Edited by- AdamJD (edited code will have AdamJD by it)
+
 var BroomHarry			Harry;
 var QuidPlayer			Seeker;				// Opponent team's seeker
 var Snitch				Snitch;
@@ -797,26 +799,29 @@ state GameCatch
 
 		PlayerHarry.ClientMessage( "Entered GameCatch State" );
 		Log( "Entered GameCatch State" );
-
-		CatchTriesLeft = SnitchMaxCatchTries;
-		SetTimer( 10.0, false );		// Watchdog timer in case Harry never reaches ground
+		
+		//not needed -AdamJD
+		// CatchTriesLeft = SnitchMaxCatchTries;
+		// SetTimer( 10.0, false );		// Watchdog timer in case Harry never reaches ground
 
 		// Make Harry trail the snitch
-		Harry.GotoState( 'Pursue' );
+		// Harry.GotoState( 'Pursue' ); //not needed -AdamJD
+		Harry.GotoState( 'Catching' ); //the pursue state is bugged with the new code so go straight to catching the snitch -AdamJD
 
 		// Make bludgers stop seeking Harry
 		foreach AllActors( class'Bludger', Bludger )
 			Bludger.SeekTarget( None );
 
+		//not needed -AdamJD
 		// Switch to catch-the-snitch hud element
-		QuidHud( Harry.MyHud ).PlayHUDGame(true);
-		QuidHud( Harry.MyHud ).SetHUDGameType(HUDG_QUIDDITCH);
-
-		Harry.cam.gotostate('LockAroundHarry');
-		Harry.cam.CameraDistance = 200.000;
-		Harry.cam.TargetRot = rot(5000, 5000, 0);
+		// QuidHud( Harry.MyHud ).PlayHUDGame(true);
+		// QuidHud( Harry.MyHud ).SetHUDGameType(HUDG_QUIDDITCH);
+		
+		// Harry.cam.gotostate('LockAroundHarry');
+		// Harry.cam.CameraDistance = 200.000;
+		// Harry.cam.TargetRot = rot(5000, 5000, 0);
 	}
-
+	
 	function Tick( float DeltaTime )
 	{
 		local TeamAffiliation	eTeam;
@@ -844,7 +849,9 @@ state GameCatch
 			fTimeToCheer = Level.TimeSeconds + 8.0 + 3.0*FRand();
 		}
 	}
-
+	
+	//not needed -AdamJD
+	/*
 	function OnActionKeyPressed()
 	{
 		// Called when the player's "Action" key/button is pressed.
@@ -852,7 +859,7 @@ state GameCatch
 
 		// Determine if snitch is caught; if so, goto Won state; otherwise
 		// either wait for a few more tries, or return to regular game play
-		if ( QuidHud( Harry.MyHud ).HUDGameGrab() /*Snitch caught*/ )
+		if ( QuidHud( Harry.MyHud ).HUDGameGrab()  ) //snitch caught
 		{
 			// Caught the Snitch!  Put snitch in harry's hand
 			if ( PlayMechanic == PM_ProximityWithHoops )
@@ -863,7 +870,7 @@ state GameCatch
 
 			QuidHud(Harry.myHUD).DestroyPopup();
 
-			// Tell seeker to stop looking for the Snitch
+			Tell seeker to stop looking for the Snitch
 			if ( Seeker != None )
 				Seeker.SetLookForTarget( None );
 
@@ -874,7 +881,7 @@ state GameCatch
 			--CatchTriesLeft;
 			if ( CatchTriesLeft <= 0 )
 			{
-				// Turn off hud progress element
+				Turn off hud progress element
 				QuidHud( Harry.MyHud ).PlayHUDGame(false);
 				QuidHud(Harry.myHUD).DestroyPopup();
 				Harry.cam.gotostate('QuidditchState');
@@ -883,8 +890,10 @@ state GameCatch
 				GotoState( 'GamePlay' );
 			}
 		}
-	}
-
+	}*/
+	
+	//not needed -AdamJD
+	/*
 	function Timer()
 	{
 		// Never actioned on the snitch; go back to regular gameplay
@@ -892,11 +901,11 @@ state GameCatch
 		// Turn off hud progress element
 		QuidHud( Harry.MyHud ).PlayHUDGame(false);
 		QuidHud(Harry.myHUD).DestroyPopup();
-		Harry.cam.gotostate('QuidditchState');
+		Harry.cam.gotostate('QuidditchState'); //not needed -AdamJD
 
 		Harry.GotoState( 'PlayerWalking' );
 		GotoState( 'GamePlay' );
-	}
+	}*/
 
 	function EndState()
 	{
@@ -907,6 +916,19 @@ state GameCatch
 		Harry.StopFlyingOnPath();
 		fProgressPercent = 75.0;
 	}
+	
+	//code copied from OnActionKeyPressed function to make Harry catch the snitch -AdamJD
+	Begin:
+		Snitch.HoopTrail.GotoState( 'TrailOff' );
+		Snitch.StopFlyingOnPath();
+		Harry.CatchTarget( Snitch, 'IPHarry_Win' );
+		Snitch.Halo.bHidden = true;
+
+		// Tell seeker to stop looking for the Snitch
+		if ( Seeker != None )
+			Seeker.SetLookForTarget( None );
+				
+		GotoState( 'GameWon' );
 }
 
 state GameWon
@@ -952,10 +974,11 @@ Begin:
 		Commentator.SayComment( QC_SigningOff );
 		Sleep( Commentator.TimeLeftUntilSafeToSayAComment( true ) );
 	}
-	else
-	{
-		Sleep( 12.0 );
-	}
+	//not needed- AdamJD
+	// else
+	// {
+		// Sleep( 12.0 );
+	// }
 
 	if ( bLeagueMode )
 	{

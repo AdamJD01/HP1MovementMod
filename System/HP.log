@@ -1,0 +1,273 @@
+Log: Log file open, 12/20/19 17:56:22
+Init: Name subsystem initialized
+Init: Detected: Microsoft Windows NT 6.2 (Build: 9200)
+Init: Version: 433
+Init: Compiled: Oct 28 2001 14:55:11
+Init: Command line:  -window -c 
+Init: Base directory: C:\HP1_UW\System\
+Init: Character set: Unicode
+Log: Bound to Engine.dll
+Log: Bound to Core.dll
+Log: Bound to Window.dll
+Init: Object subsystem initialized
+Init: Computer: DESKTOPQS4K5D2
+Init: User: Adam
+Init: Memory total: Phys=2097151K Avail=2097151K Pagef=4194303K Virt=2097024K
+Init: Working set: 32000 / 159000
+Init: CPU Speed=2594.013671 MHz
+Init: CPU Page size=4096, Processors=4
+Init: CPU Detected: PentiumPro-class processor (GenuineIntel)
+Init: CPU Features: CMov FPU RDTSC PAE MMX KNI
+Init: Unreal engine initialized
+Log: Bound to WinDrv.dll
+Init: Mouse info: 6 10 1
+Log: joyGetDevCaps failed
+Init: Client initialized
+Log: Bound to Render.dll
+Init: Lighting subsystem initialized
+Init: Rendering initialized
+Log: LoadMap: Entry
+Log: Game class is 'GameInfo'
+Log: Level is Level Entry.MyLevel
+Log: Bringing Level Entry.MyLevel up for play (0)...
+ScriptLog: InitGame: 
+ScriptLog: Base Mutator is Entry.Mutator0
+Log: Load time Entry: 0.063803 seconds total, 0.078125 app
+Log: Browse: Startup.unr?Name=Player?Class=Harrypotter.harry?team=255
+Log: LoadMap: Startup.unr?Name=Player?Class=Harrypotter.harry?team=255
+Log: Bound to Fire.dll
+Log: Collecting garbage
+Log: Purging garbage
+Log: Garbage: objects: 13925->13925; refs: 160783
+Log: Game class is 'GameInfo'
+Log: Level is Level Startup.MyLevel
+Log: Bringing Level Startup.MyLevel up for play (0)...
+ScriptLog: InitGame: ?Name=Player?Class=Harrypotter.harry?team=255
+ScriptLog: Base Mutator is Startup.Mutator1
+ScriptLog: Narrator spawned:Startup.Narrator0
+ScriptWarning: CamTarget Startup.CamTarget0 (Function HPBase.CamTarget.PostBeginPlay:001D) Accessed None: rectarget
+ScriptWarning: CamTarget Startup.CamTarget0 (Function HPBase.CamTarget.PostBeginPlay:0025) Accessed None: Unknown
+ScriptWarning: CamTarget Startup.CamTarget0 (Function HPBase.CamTarget.PostBeginPlay:002D) Attempt to assigned variable through None
+ScriptWarning: PotCam Startup.PotCam0 (Function HPBase.BaseCam.PostBeginPlay:0069) Accessed None: rectarget
+ScriptWarning: PotCam Startup.PotCam0 (Function HPBase.BaseCam.PostBeginPlay:0071) Accessed None: Unknown
+ScriptWarning: PotCam Startup.PotCam0 (Function HPBase.BaseCam.PostBeginPlay:0079) Attempt to assigned variable through None
+ScriptLog: weapon isNone
+Log: PlayAnim: No mesh
+ScriptLog: Startup.Harry0 spawning weap Startup.baseWand0
+ScriptLog: Startup.Harry0 ShadowClass=HarryPotter.HarryShadow shadow=Startup.HarryShadow0 tex=Engine.ShadowT
+Init: Initialized moving brush tracker for Level Startup.MyLevel
+Log: Load time Startup.unr: 0.228718 seconds total, 0.218750 app
+ScriptLog: Team 255
+ScriptLog: Login: Player
+Log: Possessed PlayerPawn: Harry Startup.Harry0
+ScriptLog: All inventory from Player is accepted
+Init: Input system initialized for WindowsViewport0
+Log: Opened viewport
+Log: Bound to D3DDrv.dll
+Init: DirectDraw drivers detected:
+Init:    display (Primary Display Driver)
+Init: D3D Device: Supports system memory DMA blts
+Log: D3D Device 4194240K vram, 4186140K free
+Init: Direct3D support - internal revision 1.9b
+Init: D3D Device: szDriver=igdumdim32.dll
+Init: D3D Device: szDescription=Intel(R) HD Graphics 5500
+Init: D3D Device: wProduct=0
+Init: D3D Device: wVersion=0
+Init: D3D Device: wSubVersion=0
+Init: D3D Device: wBuild=0
+Init: D3D Device: dwVendorId=32902
+Init: D3D Device: dwDeviceId=5654
+Init: D3D Device: dwSubSysId=571871292
+Init: D3D Device: dwRevision=9
+Init: D3D Device: dwZbuffer depth: 32 bits.
+Init: D3D Driver: wMaxTextureBlendStages=4
+Init: D3D Driver: wMaxSimultaneousTextures=4
+Log: D3D Driver: Supports FOURCC YUY2
+Log: D3D Driver: Supports FOURCC UYVY
+Log: D3D Driver: Supports FOURCC AYUV
+Log: D3D Driver: Supports FOURCC DXT1
+Log: D3D Driver: Supports FOURCC DXT2
+Log: D3D Driver: Supports FOURCC DXT3
+Log: D3D Driver: Supports FOURCC DXT4
+Log: D3D Driver: Supports FOURCC DXT5
+Init: D3D Detected: Intel video card
+Init: D3D Driver: Supports trilinear
+Init: D3D Driver: Supports specular gouraud
+Init: D3D Driver: Supports BLENDDIFFUSEALPHA
+Init: D3D Driver: Supports non-power-of-2 textures
+Init: D3D Driver: Supports LOD biasing
+Init: D3D Driver: Supports Z biasing
+Init: D3D Driver: Supports D3DTOP_ADDSIGNED2X
+Init: D3D Driver: Supports D3DTOP_BUMPENVMAP
+Init: D3D Driver: Supports D3DTOP_BUMPENVMAPLUMINANCE
+Init: D3D Driver: Supports D3DTOP_DOTPRODUCT3
+Init: D3D Driver: Supports D3DTOP_MODULATEALPHA_ADDCOLOR
+Init: D3D Driver: Supports D3DTOP_MODULATECOLOR_ADDALPHA
+Init: D3D Driver: Textures (1x1)-(8192x8192), Max aspect 8192
+Init: D3D Driver: VidMem Disposition: 202 0
+Log: Bound to Galaxy.dll
+Init: Galaxy is using DirectSound
+Init: Galaxy initialized
+DevAudio: Galaxy SetViewport: WindowsViewport0
+Init: Galaxy is using DirectSound
+Log: Galaxy started: glxAudioOutput.Type=0 Version=5, Driver=
+Init: Game engine initialized
+Log: Startup time: 1.177217 seconds
+ScriptWarning: HPConsole Transient.HPConsole0 (Function HPMenu.HPConsole.Tick:0034) Accessed None: menuBook
+ScriptLog: Creating root window: UWindow.UWindowRootWindow
+ScriptLog: LanguageCode=int
+ScriptLog: SavePointStuff: Created
+Localization: No localization: pickup2.all.localized_keyname_000 (int)
+Localization: No localization: pickup2.all.localized_keyname_048 (int)
+Localization: No localization: pickup2.all.localized_keyname_049 (int)
+Localization: No localization: pickup2.all.localized_keyname_050 (int)
+Localization: No localization: pickup2.all.localized_keyname_051 (int)
+Localization: No localization: pickup2.all.localized_keyname_052 (int)
+Localization: No localization: pickup2.all.localized_keyname_053 (int)
+Localization: No localization: pickup2.all.localized_keyname_054 (int)
+Localization: No localization: pickup2.all.localized_keyname_055 (int)
+Localization: No localization: pickup2.all.localized_keyname_056 (int)
+Localization: No localization: pickup2.all.localized_keyname_057 (int)
+Localization: No localization: pickup2.all.localized_keyname_091 (int)
+Localization: No localization: pickup2.all.localized_keyname_092 (int)
+Localization: No localization: pickup2.all.localized_keyname_093 (int)
+Localization: No localization: pickup2.all.localized_keyname_112 (int)
+Localization: No localization: pickup2.all.localized_keyname_113 (int)
+Localization: No localization: pickup2.all.localized_keyname_114 (int)
+Localization: No localization: pickup2.all.localized_keyname_115 (int)
+Localization: No localization: pickup2.all.localized_keyname_116 (int)
+Localization: No localization: pickup2.all.localized_keyname_117 (int)
+Localization: No localization: pickup2.all.localized_keyname_118 (int)
+Localization: No localization: pickup2.all.localized_keyname_119 (int)
+Localization: No localization: pickup2.all.localized_keyname_120 (int)
+Localization: No localization: pickup2.all.localized_keyname_121 (int)
+Localization: No localization: pickup2.all.localized_keyname_236 (int)
+Localization: No localization: pickup2.all.localized_keyname_237 (int)
+ScriptLog: OptionPage keyname 1 is LeftMouse, KeyBinding Alias is AltFire | Button bBroomBrake
+ScriptLog: OptionPage keyname 2 is RightMouse, KeyBinding Alias is jump | Button bBroomBoost
+ScriptLog: OptionPage keyname 13 is Enter, KeyBinding Alias is LookToggle
+ScriptLog: OptionPage keyname 17 is Ctrl, KeyBinding Alias is Jump
+ScriptLog: OptionPage keyname 18 is Alt, KeyBinding Alias is AltFire
+ScriptLog: OptionPage keyname 27 is Escape, KeyBinding Alias is quit
+ScriptLog: OptionPage keyname 37 is Left, KeyBinding Alias is RotLeft | StrafeLeft | Button bBroomYawLeft
+ScriptLog: OptionPage keyname 38 is Up, KeyBinding Alias is MoveForward | Button bBroomPitchUp
+ScriptLog: OptionPage keyname 39 is Right, KeyBinding Alias is RotRight | StrafeRight | Button bBroomYawRight
+ScriptLog: OptionPage keyname 40 is Down, KeyBinding Alias is MoveBackward | Button bBroomPitchDown
+ScriptLog: OptionPage keyname 65 is A, KeyBinding Alias is ROTLEFT | BUTTON BBROOMYAWLEFT | STRAFELEFT
+ScriptLog: OptionPage keyname 67 is C, KeyBinding Alias is BUTTON BBROOMBRAKE
+ScriptLog: OptionPage keyname 68 is D, KeyBinding Alias is ROTRIGHT | BUTTON BBROOMYAWRIGHT | STRAFERIGHT
+ScriptLog: OptionPage keyname 83 is S, KeyBinding Alias is MOVEBACKWARD | BUTTON BBROOMPITCHDOWN
+ScriptLog: OptionPage keyname 87 is W, KeyBinding Alias is MOVEFORWARD | BUTTON BBROOMPITCHUP
+ScriptLog: OptionPage keyname 90 is Z, KeyBinding Alias is BUTTON BBROOMBOOST
+ScriptLog: OptionPage keyname 191 is Slash, KeyBinding Alias is AltFire
+ScriptLog: OptionPage keyname 228 is MouseX, KeyBinding Alias is Axis aMouseX Speed=6.0 | Axis aBroomYaw Speed=6.0
+ScriptLog: OptionPage keyname 229 is MouseY, KeyBinding Alias is Axis aMouseY Speed=6.0 | Axis aBroomPitch Speed=-6.0
+ScriptLog: Sensitivity changed to 3.000000
+Warning: Failed to load 'Texture StoryBookTest.CommonRoom001': Failed to find object 'Texture StoryBookTest.CommonRoom001'
+Warning: Failed to load 'Texture StoryBookTest.CommonRoom002': Failed to find object 'Texture StoryBookTest.CommonRoom002'
+Warning: Failed to load 'Texture StoryBookTest.CommonRoom003': Failed to find object 'Texture StoryBookTest.CommonRoom003'
+Warning: Failed to load 'Texture StoryBookTest.CommonRoom004': Failed to find object 'Texture StoryBookTest.CommonRoom004'
+ScriptLog: ChangePage None
+ScriptLog: OpenBook Splash, None
+ScriptLog: Init level = Startup.unr?Name=Player?Class=Harrypotter.harry?team=255
+ScriptLog: ChangePage Transient.FEMainPage0
+ScriptLog: ChangePage Transient.FESlotPage0
+ScriptLog: Trying Thumbnail File :..\Save\SGS LEV_TUT1B.bmp
+Log: FactoryCreateBinary: Texture with EngineTextureFactory (0 0 ..\Save\SGS LEV_TUT1B.bmp)
+ScriptLog: Slot 0Has Save Point ID -1
+ScriptLog: Loaded Thumbnail File :..\Save\SGS LEV_TUT1B.bmp
+ScriptLog: SavePointStuff: Load From slot:nSelectedSlot name:0.usa
+Log: Browse: save0.usa?Name=Player?Class=Harrypotter.harry?team=255
+Log: Memory Allocation Status
+Log: Curr Memory  26.618M /  28.168M
+Log: Peak Memory  26.635M /  28.227M
+Log: Allocs       56678 Current /  270941 Total
+Log: LoadMap: save0.usa?Name=Player?Class=Harrypotter.harry?team=255
+DevAudio: Galaxy SetViewport: WindowsViewport0
+Log: -0.0ms Unloading: Package Startup
+Init: Shut down moving brush tracker for Level Startup.MyLevel
+Warning: Type mismatch in Region of GameReplicationInfo: file 10, class 2
+Warning: Skipping 6 bytes of type 10
+ScriptLog: NextURL = LEV_TUT1B
+Log: Collecting garbage
+Log: Purging garbage
+Log: -0.0ms Unloading: Package StoryBookTest
+Log: Garbage: objects: 18033->18025; refs: 547036
+Log: Spawning new actor for Viewport WindowsViewport0
+ScriptLog: Team 255
+ScriptLog: Login: Player
+Log: Possessed PlayerPawn: Harry save0.Harry0
+ScriptLog: All inventory from Player is accepted
+Init: Initialized moving brush tracker for Level save0.MyLevel
+DevAudio: Galaxy SetViewport: WindowsViewport0
+Log: Load time save0.usa: 0.256432 seconds total, 0.281250 app
+ScriptLog: ChangePage Transient.FEReportPage0
+ScriptLog: OpenBook REPORT, Transient.FEReportPage0
+DevAudio: Galaxy SetViewport: NULL
+Log: Closed viewport
+Log: All Windows Closed
+Log: appRequestExit(0)
+Exit: Preparing to exit.
+Log: Purging garbage
+Init: Shut down moving brush tracker for Level save0.MyLevel
+Log: -0.0ms Unloading: Package JS_GreenCauldron_24
+Log: -0.0ms Unloading: Package Phoenix
+Log: -0.0ms Unloading: Package JS_HogwartsNeutral_14
+Log: -0.0ms Unloading: Package Hub_3_Lumos
+Log: -0.0ms Unloading: Package hogwarts_neutral_mxlp1
+Log: -0.0ms Unloading: Package Troll_asleep
+Log: -0.0ms Unloading: Package Hub1_amb
+Log: -0.0ms Unloading: Package SecretCauldron
+Log: -0.0ms Unloading: Package HP_7th
+Log: -0.0ms Unloading: Package HP_K
+Log: -0.0ms Unloading: Package HP_3rd
+Log: -0.0ms Unloading: Package Hub1_sfx
+Log: -0.0ms Unloading: Package Tut1
+Log: -0.0ms Unloading: Package HP_T
+Log: -0.0ms Unloading: Package HP_Dungeon
+Log: -0.0ms Unloading: Package HP_1st
+Log: -0.0ms Unloading: Package HP_C
+Log: -0.0ms Unloading: Package HP_BroomTraining
+Log: -0.0ms Unloading: Package HProps
+Log: -0.0ms Unloading: Package HP_Basic
+Log: -0.0ms Unloading: Package save0
+Log: -0.0ms Unloading: Package MenuArt
+Log: -0.0ms Unloading: Package UWindowFonts
+DevAudio: Galaxy SetViewport: NULL
+Exit: Galaxy shut down
+Log: Unbound to Galaxy.dll
+Log: Unbound to D3DDrv.dll
+Log: -0.0ms Unloading: Package HPDialog
+Log: -0.0ms Unloading: Package HPMenu
+Log: -0.0ms Unloading: Package HPEdit
+Log: -0.0ms Unloading: Package HPModels
+Log: -0.0ms Unloading: Package UWindow
+Log: -0.0ms Unloading: Package HPSounds
+Log: -0.0ms Unloading: Package Fire
+Log: Unbound to Fire.dll
+Log: -0.0ms Unloading: Package HPParticle
+Log: -0.0ms Unloading: Package HPBase
+Log: -0.0ms Unloading: Package HarryPotter
+Log: -0.0ms Unloading: Package HP_Logo
+Log: -0.0ms Unloading: Package UnrealShare
+Log: -0.0ms Unloading: Package Entry
+Exit: Lighting subsystem shut down
+Exit: Rendering shut down
+Log: Unbound to Render.dll
+Exit: Windows client shut down
+Log: Unbound to WinDrv.dll
+Exit: Game engine shut down
+Log: -0.0ms Unloading: Package Core
+Log: -0.0ms Unloading: Package Engine
+Log: Unbound to Window.dll
+Log: Unbound to Core.dll
+Log: Unbound to Engine.dll
+Log: Garbage: objects: 18020->0; refs: 547036
+Exit: Object subsystem successfully closed.
+Exit: Exiting.
+Uninitialized: Name subsystem shut down
+Uninitialized: Memory Allocation Status
+Uninitialized: Curr Memory  0.702M /  2.594M
+Uninitialized: Peak Memory  45.110M /  46.813M
+Uninitialized: Allocs        1033 Current /  337069 Total
+Uninitialized: Log file closed, 12/20/19 17:56:43

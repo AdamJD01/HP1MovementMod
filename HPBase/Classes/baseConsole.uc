@@ -1,5 +1,7 @@
 class baseConsole expands WindowConsole;
 
+//Edited by- AdamJD (edited code will have AdamJD by it)
+
 var bool	bLeftKeyDown;
 var bool	bRightKeyDown;
 var bool	bForwardKeyDown;
@@ -15,7 +17,7 @@ var bool	bRotateDownKeyDown;
 var bool bSpaceReleased;
 var bool bSpacePressed;
 
-var globalconfig bool bDebugMode;
+var globalconfig bool bDebugMode; //this was already here in the retail code but was only set up to be typed in game... -AdamJD
 var globalconfig bool bUseSystemFonts;
 
 var bool bUseAsianFont;
@@ -98,5 +100,6 @@ function DrawLevelAction( canvas C )
 defaultproperties
 {
      bUseSystemFonts=True
-	 bDebugMode=True
+	 //bDebugMode=True //old default prop added by me, debug mode is now not hard coded and can be turned on by changing bDebugMode=False to bDebugMode=True in the HP.ini config file or by typing "HarryDebugModeOn" in game -AdamJD
+	 bDebugMode=False //debug mode is now turned off by default and can be turned off by pressing F7 in game if turned on -AdamJD
 }

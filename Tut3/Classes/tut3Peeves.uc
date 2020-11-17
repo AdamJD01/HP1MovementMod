@@ -742,8 +742,11 @@ begin:
 	loopAnim('hit');
 	finishanim();
 	if(hitCount<=0)
+	{
 		gotostate('dieing');
+	}
 	gotoState('patrol');
+	
 
 }
 state dieing

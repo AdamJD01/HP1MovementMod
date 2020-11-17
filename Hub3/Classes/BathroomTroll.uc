@@ -1,5 +1,7 @@
 class BathroomTroll expands BaseTroll;
 
+//Edited by- AdamJD (edited code will have AdamJD by it)
+
 var float				TimeRemaining;
 var	BaseToiletObject	ThrownObject;
 
@@ -27,10 +29,10 @@ auto state Initial
 	function beginstate()
 	{
 
-		//foreach AllActors(class'baseharry', playerHarry)
-		//{
-		//	break;
-		//}
+		// foreach AllActors(class'baseharry', playerHarry)
+		// {
+			// break;
+		// }
 
 		foreach AllActors(class'BathroomRon', CastingRon)
 		{
@@ -40,7 +42,7 @@ auto state Initial
 		//Temp set up for this test
 //		basewand(playerHarry.weapon).addspell(class'spellflip');
 		playerHarry.bosstarget = self;
-//		playerHarry.cam.gotostate('bossstate');
+		//playerHarry.cam.gotostate('bossstate');
 
 		loopanim('breathe');
 //		gotostate('combat');
@@ -155,10 +157,11 @@ state Combat
 
 			if (animframe > 0.6 && bThrowing)
 			{
-				if( FRand() < 0.8 )
+				//casting at objects thrown at Ron is bugged for the new Harry code so I've made all the objects go towards Harry -AdamJD
+				// if( FRand() < 0.8 )
 					ThrownObject.ThrowObject(playerHarry);
-				else
-					ThrownObject.ThrowObject(CastingRon);
+				// else
+					// ThrownObject.ThrowObject(CastingRon);
 
 //				PlaySound(sound'HPSounds.Hub1_sfx.peeves_Throws', SLOT_None, [Volume]RandRange(0.8, 1.0), [Radius]100000, [Pitch]RandRange(0.9, 1.1) ); //break;
 				switch( Rand(3) )

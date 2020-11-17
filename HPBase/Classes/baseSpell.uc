@@ -3,16 +3,16 @@
 //=============================================================================
 class baseSpell extends Projectile;
 
-#exec MESH IMPORT MESH=spellProj ANIVFILE=MODELS\SpellProj_a.3D DATAFILE=MODELS\Cross_d.3D X=0 Y=0 Z=0
+//Edited by- AdamJD (edited code will have AdamJD by it)
+
+//#exec MESH IMPORT MESH=spellProj ANIVFILE=MODELS\SpellProj_a.3D DATAFILE=MODELS\Cross_d.3D X=0 Y=0 Z=0 //not needed -AdamJD
 
 //#exec MESH ORIGIN MESH=spellProj X=0 Y=0 Z=0 YAW=64
 //#exec MESH SEQUENCE MESH=spellProj SEQ=All    STARTFRAME=0   NUMFRAMES=1
 //#exec MESH SEQUENCE MESH=spellProj SEQ=Still  STARTFRAME=0   NUMFRAMES=1
 //#exec MESHMAP SCALE MESHMAP=spellProj X=0.2 Y=0.2 Z=0.2
 
-#exec OBJ LOAD FILE=..\textures\HP_FX.utx PACKAGE=HPBase.FXPackage
-
-
+//#exec OBJ LOAD FILE=..\textures\HP_FX.utx PACKAGE=HPBase.FXPackage //not needed -AdamJD
 
 
 #EXEC TEXTURE IMPORT NAME=defaultSpellIcon  FILE=TEXTURES\transSpellIcon.bmp GROUP="Icons" FLAGS=2 MIPS=OFF
@@ -28,7 +28,7 @@ var sound CastSound;
 var string SpellIncantation;
 var string QuietSpellIncantation;
 
-var float manaCost;
+//var float manaCost; //not needed -AdamJD
 
 var (VisualEffects)	Mesh projectileMesh;
 var (VisualEffects)	class<baseVisualEffect> hitEffect;
@@ -48,6 +48,12 @@ var (VisualEffects) gesture Gesture;
 // FX for the spell gesture
 var (VisualEffects)class<ParticleFX>GestureParticleEffectClass;
 
+//AdamJD vars
+var vector		CurrentDir;	
+var vector		TargetOffset;
+var float 		SeekSpeed;	
+var float 		SpellLifeTime;
+
 simulated function PostBeginPlay()
 {
 	Super.PostBeginPlay();
@@ -58,6 +64,8 @@ simulated function PostBeginPlay()
 		flyParticleEffect=spawn(flyParticleEffectClass);
 		flyParticleEffect.setRotation(flyParticleEffect.default.rotation);
 		}
+		
+	CurrentDir = vector(rotation); //AdamJD
 }
 
 function PlaySpellCastSound()
@@ -86,12 +94,39 @@ event Tick(float deltaTime)
 	super.Tick(deltaTime);
 	if(flyParticleEffect!=None)
 		flyParticleEffect.SetLocation(location);
+		
+	if( (SpellLifeTime -= deltaTime) < 0 )
+	{
+		Destroy();
+	}
 
 }
 
 function AdjustLifeTimer(float NewLifeTimer)
 {
 	//Implemented in derived class
+}
+
+//target offset -AdamJD
+function InitSpell(Actor CastedAt, optional vector CastedAtOffset)
+{
+	target = CastedAt;
+	TargetOffset = CastedAtOffset;
+}
+
+//spell direction -AdamJD
+function SetSpellDirection( vector dir )
+{
+	CurrentDir	    = normal(dir);
+	DesiredRotation = rotator(CurrentDir);
+	SetRotation( DesiredRotation );
+	flyParticleEffect.SetRotation( DesiredRotation );
+}
+
+//hit location -AdamJD
+function vector GetTargetHitLocation()	
+{ 
+	return target.location + TargetOffset;
 }
 
 //*************************************************************************************************
@@ -224,7 +259,7 @@ simulated function Timer()
 
 
 		//@PAB removed this, as this caused the spell to go upwards far too much
-		//		aimPoint.Z=aimPoint.Z+(target.CollisionHeight)+2;
+				//aimPoint.Z+=(target.CollisionHeight)+2;
 
 		SeekingDir = Normal(aimPoint - Location);
 		if ( (SeekingDir Dot InitialDir) > 0 )
@@ -239,7 +274,7 @@ simulated function Timer()
 	}
 
 		//drop off puffs as it flys
-	//	b = Spawn(class'ut_SpriteSmokePuff');
+		//b = Spawn(class'ut_SpriteSmokePuff');
 }
 
 
@@ -254,10 +289,12 @@ Log("******** Explode:"$self);
 
 	Destroy();
 }
-function static Texture GetSpellIcon()
-{
-	return(default.spellIcon);
-}
+
+//not needed -AdamJD
+// function static Texture GetSpellIcon()
+// {
+	// return(default.spellIcon);
+// }
 
 //Mover::IsRelevant calls this
 function bool IsRelevantToMover()
@@ -273,7 +310,7 @@ defaultproperties
      spellIcon=Texture'HPBase.Icons.defaultSpellIcon'
      spellName="baseSpell"
      CastSound=Sound'HPSounds.magic_sfx.spell_cast'
-     manaCost=10
+     //manaCost=10 //not needed -AdamJD
      projectileMesh=LodMesh'HPBase.spellProj'
      GestureParticleEffectClass=Class'HPParticle.Les_SpellShape'
      Speed=170
@@ -282,7 +319,7 @@ defaultproperties
      bNetTemporary=False
      RemoteRole=ROLE_SimulatedProxy
      LifeSpan=10
-     Mesh=LodMesh'HPBase.spellProj'
+     //Mesh=LodMesh'HPBase.spellProj' //not needed -AdamJD
      DrawScale=0.3
      bUnlit=True
      CollisionRadius=5
@@ -295,4 +332,6 @@ defaultproperties
      LightSaturation=72
      LightRadius=10
      bFixedRotationDir=True
+	 SeekSpeed=7.0f //AdamJD
+	 SpellLifeTime=8.0 //AdamJD
 }

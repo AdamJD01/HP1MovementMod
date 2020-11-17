@@ -96,7 +96,8 @@ function rotator AdjustToss(float projSpeed, vector projStart, int aimerror, boo
 //*************************************************************************************************************************
 function vector GetCameraOffset()
 {
-	return vect(0,0,0);
+	//return vect(0,0,0);
+	return Location;
 }
 
 //*************************************************************************************************************************

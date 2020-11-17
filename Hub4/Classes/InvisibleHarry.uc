@@ -5,6 +5,8 @@
 
 class InvisibleHarry extends Harry;
 
+//Edited by- AdamJD (edited code will have AdamJD by it)
+
 // Make this setable in the Editor so we can tweak it...
 var () float	InvisibleValue;
 var Texture		HitTexture;		// This is global to the class here so we can check it from Filch & Norris
@@ -87,9 +89,12 @@ function MakeVisible(float DeltaTime)
 
 function OverrideTick(float DeltaTime)
 {
+	local bool isDebugged;
+	
 	// This lets us know that, in fact, this function is not called all the time...
-
-	if(!IsInState('playeraiming'))
+	
+	//if(!IsInState('playeraiming')) //old not needed retail PlayerAiming state -AdamJD
+	if(!bPlayerCasting) //is player not casting? -AdamJD
 	{
 		if(bHasCloak)
 			MakeInvisible(DeltaTime);
@@ -100,23 +105,40 @@ function OverrideTick(float DeltaTime)
 	{
 		MakeVisible(DeltaTime);
 	}
-
+	
+	//old retail code -AdamJD
+	/*
 	// Now signal for Movement
 	if(VSize (LastLocation - location) > FlagMovementRadius)
 	{
-		// ***************** Diagnostics 
-		//if(!IsMoving)
-		//	clientmessage("Harry Started Moving.");
+		//Diagnostics 
+		if(!IsMoving)
+			clientmessage("Harry Started Moving.");
 		IsMoving = true;
 	}
 	else
 	{
-		// ***************** Diagnostics 
-		//if(IsMoving)
-		//	clientmessage("Harry Stopped Moving.");
+		//Diagnostics 
+		if(IsMoving)
+			clientmessage("Harry Stopped Moving.");
 		IsMoving = false;
 	}
-
+	*/
+	
+	//Player is not touching a movement key or is in a cutscene -AdamJD
+	if( Acceleration == vect(0,0,0) )
+	{
+		IsMoving = false;
+		//ClientMessage("Harry not moving"); //for testing -AdamJD
+	}
+	
+	//Player has touched a movement key so therefore Harry is now moving -AdamJD
+	else
+	{
+		IsMoving = true; 
+		//ClientMessage("Harry is moving"); //for testing -AdamJD
+	}
+	
 	LastLocation = location;
 }
 
@@ -195,6 +217,18 @@ state harryfrozen
 		Super.PlayerTick(DeltaTime);
 
 		OverrideTick(DeltaTime);
+		
+		//stop casting and turn off cursor if caught -AdamJD
+		if(bPlayerCasting == true)
+		{
+			bPlayerCasting = false;
+			StopCasting();
+			baseWand(weapon).bPointing = false;
+			basewand(weapon).bCasting=false;
+			baseWand(Weapon).WandEffect.bHidden = true;
+			rectarget.destroy();
+			StopSoundFX();
+		}
 	}
 
 	function ProcessMove(float DeltaTime, vector NewAccel, eDodgeDir DodgeMove, rotator DeltaRot)	
@@ -218,7 +252,7 @@ state harryfrozen
 			bPressedJump = false;
 		}
 
-		if ( (Physics == PHYS_Walking)  )
+		if ( (Physics == PHYS_Walking) )
 		{
 			loopanim('caughtbyfilch');
 		}
@@ -299,6 +333,8 @@ state Mounting
 	}
 }
 
+//old not needed retail PlayerAiming state -AdamJD
+/*
 state playeraiming
 {
 	event PlayerTick(float DeltaTime)
@@ -308,7 +344,7 @@ state playeraiming
 		Super.PlayerTick(DeltaTime);
 	}
 }
-
+*/
 
 state PlayerWalking
 {
@@ -317,6 +353,12 @@ state PlayerWalking
 		Super.PlayerTick(DeltaTime);
 
 		OverrideTick(DeltaTime);
+		
+		//if player is casting then make Harry visible -AdamJD
+		if (bPlayerCasting == true) 
+		{
+			MakeVisible(DeltaTime); 
+		}
 	}
 }
 

@@ -3,6 +3,8 @@
 //=============================================================================
 class BroomHarry extends Harry;
 
+//Edited by- AdamJD (edited code will have AdamJD by it)
+
 var float	fPitchControl;		// Range +1.0 to -1.0 (up/down)
 var float	fYawControl;		// Range +1.0 to -1.0 (right/left)
 var float	fRotationRateYaw;	// Yaw uses this because Roll is tied to RotationRate.Yaw for some reason
@@ -754,7 +756,7 @@ state PlayerWalking	// Well, flying actually; but as his normal mode of getting 
 		}
 
 		// Update rotation.
-		UpdateRotation(DeltaTime, 1);
+		UpdateRotation(DeltaTime, 1); 
 		GetAxes(Rotation,X,Y,Z);
 
 		// Update acceleration.
@@ -829,16 +831,20 @@ state PlayerWalking	// Well, flying actually; but as his normal mode of getting 
 	{
 		local rotator	NewRotation;
 		local float		YawVal;
+		local float 	YawValY; //AdamJD local float
 		local float		DeltaYaw;
 		local int		nDeltaYaw;
 		local float		DeltaPitch;
 		local float		fPitchLimitHi;
 		local float		fPitchLimitLo;
 		local float		fEffectiveMousePitch;
+		
+		YawValY = YawVal; //set YawVal to YawValY -AdamJD
 
 		NewRotation = Rotation;
 		fPitchLimitHi = PitchLimitUp * (0x4000/90.0);
 		fPitchLimitLo = 0x00010000 - (PitchLimitDown * (0x4000/90.0));
+		
 
 		// Modify pitch using current input source
 		if ( bPitchUnderMouse )
@@ -944,7 +950,9 @@ state PlayerWalking	// Well, flying actually; but as his normal mode of getting 
 			fLastTimeAvoidedWall = -1.0f;	// Forget Harry was ever trying to avoid wall; player overrode
 
 		bHittingWall = false;
-
+		
+		//old retail code -AdamJD
+		/*
 		// Apply yaw control
 		if ( fYawControl > 1.0 )
 			 fYawControl = 1.0;
@@ -953,18 +961,58 @@ state PlayerWalking	// Well, flying actually; but as his normal mode of getting 
 		YawVal = fRotationRateYaw * DeltaTime * fYawControl;
 		if(Acceleration == vect(0,0,0))
 			YawVal = 4.0/3.0 * YawVal;
-
-		ViewRotation.Yaw += yawVal;
+		*/
+		
+		//get the SmoothMouseX & SmoothMouseY axis and cap it to not overshoot input -AdamJD
+		YawVal= (SmoothMouseX / 1.5) * DeltaTime; 
+		YawValY = (SmoothMouseY / 1.5) * DeltaTime;
+		
+		//limit SmoothMouseX -AdamJD 		
+		if(YawVal == SmoothMouseX)
+		{
+			if( YawVal > MAX_MOUSE_DELTA_X )		
+			{
+				YawVal = MAX_MOUSE_DELTA_X;
+			}
+				
+			else if( YawVal < MIN_MOUSE_DELTA_X ) 
+			{
+				YawVal = MIN_MOUSE_DELTA_X;
+			}
+		}
+		
+		//limit SmoothMouseY -AdamJD
+		if(YawValY == SmoothMouseY)
+		{
+			if( YawValY > MAX_MOUSE_DELTA_Y )		
+			{
+				YawValY = MAX_MOUSE_DELTA_Y;
+			}
+			
+			else if( YawValY < MIN_MOUSE_DELTA_Y ) 
+			{
+				YawValY = MIN_MOUSE_DELTA_Y;
+			}
+		}
+			
+		ViewRotation.Yaw += YawVal; //retail code -AdamJD
+		ViewRotation.Pitch += YawValY; //set YawValY to ViewRotation.Pitch -AdamJD
+			
+		DesiredRotation.Yaw = ViewRotation.Yaw; //set ViewRotation.Yaw to DesiredRotation.Yaw -AdamJD
+		DesiredRotation.Pitch = ViewRotation.Pitch; //set ViewRotation.Pitch to DesiredRotation.Pitch -AdamJD
 
 //		Log( "YawControl, YawVal: "$fYawControl$", "$YawVal );
 
-		ViewShake(deltaTime);
-			
-		NewRotation.Yaw = ViewRotation.Yaw;
+		//ViewShake(deltaTime); //old retail code -AdamJD
+		
+		//NewRotation.Yaw = ViewRotation.Yaw; //old retail code -AdamJD
+		NewRotation.Yaw = cam.rotation.Yaw; //move Harry and camera at the same time when moving mouse left or right -AdamJD
+		NewRotation.Pitch = cam.rotation.Pitch; //move Harry and camera at the same time when moving mouse up or down -AdamJD
 
 		// Commit new rotation
-		setRotation(NewRotation);
-		DesiredRotation = Rotation; //Make physicsRotation leave rotation alone
+		setRotation(NewRotation); //retail code -AdamJD
+		DesiredRotation = ViewRotation; //set ViewRotation to DesiredRotation -AdamJD
+		//DesiredRotation = Rotation; //old retail code -AdamJD
 //		ClientMessage("Rotation="$Rotation);
 	}
 
@@ -1246,7 +1294,7 @@ Begin:
 	FinishAnim();
 	Referee.OnPlayerDying();
 	LoopAnim( 'Hang' );
-	Cam.GotoState( 'TopDownState' );
+	// Cam.GotoState( 'TopDownState' ); //not needed -AdamJD
 	SetPhysics( PHYS_Falling );
 	SetTimer( 10.0, false );		// Watchdog timer in case Harry never reaches ground
 
@@ -1273,7 +1321,7 @@ state Catching
 	{
 		ClientMessage( "BroomHarry: End GetOnPath" );
 		Log( "BroomHarry: End GetOnPath" );
-//		StopFlyingOnPath();
+		// StopFlyingOnPath();
 	}
 
 	event FinishedInterpolation( InterpolationPoint Other )
@@ -1289,9 +1337,10 @@ state Catching
 	}
 
 Begin:
+	//not needed -AdamJD
+	// if ( TargetToCatch == LookForTarget )
+		// SetLookForTarget( None );
 	// Start catch animation
-	if ( TargetToCatch == LookForTarget )
-		SetLookForTarget( None );
 	PlayAnim( 'Catch', , 0.1 );
 
 	Sleep( 0.4 );			// Dead reckon when Catch animation has Harry's hand closing in around target
@@ -1307,9 +1356,10 @@ Begin:
 	FinishAnim();
 	SetSecondaryAnimation( 'Hold', , 0.1 );
 
+	//not needed -AdamJD
 	// Reverse camera
-	Cam.GotoState( 'ReverseState' );
-	StandardTarget.TargetOffset = vect(-100, 10 ,50);
+	// Cam.GotoState( 'ReverseState' );
+	// StandardTarget.TargetOffset = vect(-100, 10 ,50);
 
 	// WIll still be in lockaroundharrymode
 //		Cam.TargetRot = rot(5000, 0, 0);
@@ -1339,4 +1389,5 @@ defaultproperties
      Mesh=SkeletalMesh'HarryPotter.skremharryMesh'
      bAlignBottom=False
      RotationRate=(Pitch=24000,Roll=6000)
+	 bHidden=False //AdamJD
 }

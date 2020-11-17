@@ -2,6 +2,10 @@
 
 class spelldud extends BASESPELL;
 
+//Edited by- AdamJD (edited code will have AdamJD by it)
+
+//not needed -AdamJD
+/*
 #exec MESH  MODELIMPORT MESH=SPELLLEVMesh MODELFILE=models\LevProjectile.PSK LODSTYLE=10
 #exec MESH  ORIGIN MESH=SPELLLEVMesh X=0 Y=0 Z=0 YAW=0 PITCH=0 ROLL=0
 #exec ANIM  IMPORT ANIM=SPELLLEVAnims ANIMFILE=models\LevProjectile.PSA COMPRESS=1 MAXKEYS=999999 IMPORTSEQS=1
@@ -26,15 +30,17 @@ function PostBeginPlay()
 	Super.PostBeginPlay();
 	LoopAnim('all', 2.0, 0.0);
 }
-
+*/
 defaultproperties
 {
-     spellIcon=Texture'HPBase.Icons.alohoSpellIcon'
-     spellName="Flipendo"
-     CastSound=None
-     flyParticleEffectClass=Class'HPParticle.SmokeExplo_03'
-     Gesture=Gesture'HPBase.FlipPattern'
-     ImpactSound=None
-     LifeSpan=0.3
-     Style=STY_Translucent
+	 //this class is not needed so I've commented out default props -AdamJD
+	 
+     // spellIcon=Texture'HPBase.Icons.alohoSpellIcon'
+     // spellName="Flipendo"
+     // CastSound=None
+     // flyParticleEffectClass=Class'HPParticle.SmokeExplo_03'
+     // Gesture=Gesture'HPBase.FlipPattern'
+     // ImpactSound=None
+     // LifeSpan=0.3
+     // Style=STY_Translucent
 }

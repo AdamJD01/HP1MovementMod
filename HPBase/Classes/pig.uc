@@ -11,7 +11,7 @@ auto state pause
 defaultproperties
 {
 	DrawType=DT_Mesh
-	Mesh=SkeletalMesh'HarryPotter.skpigMesh'
+	Mesh=SkeletalMesh'HarryPotter.skpig'
 	CollisionHeight=30
 	bCollideActors=False
 }

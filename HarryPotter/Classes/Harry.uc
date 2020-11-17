@@ -2,6 +2,13 @@
 // Harry  -- hero character 
 //=============================================================================
 class Harry extends baseHarry;
+//---------------------------------------------------------------------------------------------------------------------------------------------------
+//Edited by- AdamJD (edited code will have AdamJD by it)
+//---------------------------------------------------------------------------------------------------------------------------------------------------
+//Description- Tried to make Harrys movement similar to HP2 and improved climbing. All edited code is UScript (no C++)
+//---------------------------------------------------------------------------------------------------------------------------------------------------
+//Edited Dates- Between: 30/09/2019-20/12/2019 (DD/MM/YYYY)
+//---------------------------------------------------------------------------------------------------------------------------------------------------
 
 //#exec MESH  ORIGIN MESH=skHarryMesh X=0 Y=0 Z=28 YAW=0 PITCH=0 ROLL=0
 //#exec MESH WEAPONATTACH MESH=skHarryMesh BONE="RightHand"
@@ -102,16 +109,88 @@ var float    fFallingZ;   //try and save your z when you start falling.
 var vector	MountDelta;
 var actor	MountBase;
 
-var struct savedata {
-	var EPhysics phys;
-	var int roll;
-} sd;
+//my playercasting var -AdamJD 
+var bool bPlayerCasting; //is the player casting?
 
-var EPhysics savePhys;
+//for BroomHarry and the chess board -AdamJD
+const	MIN_MOUSE_DELTA_X	= -20000.0f;	
+const	MAX_MOUSE_DELTA_X	=  20000.0f;
+const	MIN_MOUSE_DELTA_Y	= -10000.0f;
+const	MAX_MOUSE_DELTA_Y	=  10000.0f;
 
-var bool bsaved;
+//**********************************************************************************************
+//moved to near the top... where it should be -AdamJD
+event PreBeginPlay()
+{
+	Super.PreBeginPlay();
+		
+	foreach AllActors(class'baseNarrator', theNarrator)
+		break;
+	if(theNarrator==None)
+	{
+		theNarrator=spawn(class 'Narrator');
+		Log("Narrator spawned:" $theNarrator);
+	}		
 
-//Play a sound client side (so only client will hear it
+}
+
+//moved to near the top... where it should be -AdamJD
+function PostBeginPlay()
+{
+    local Pawn p;
+	local weapon weap;
+	Super.PostBeginPlay();
+
+	b3DSound = bool(ConsoleCommand("get ini:Engine.Engine.AudioDevice Use3dHardware"));
+
+	bShowMenu=false;
+	log("weapon is" $weapon);
+	if(inventory==none)
+	{
+		weap=spawn(class'baseWand');
+		weap.BecomeItem();
+		AddInventory(weap);
+		weap.WeaponSet(self);
+		weap.GiveAmmo(self);
+		baseWand(weap).bUseMana=false;
+		log(self$ " spawning weap " $weap);
+	}
+	else
+	{
+		log("not spawning weap");
+	}
+
+	iFireSeedCount = 0;
+
+	HUDType=class'HPMenu.HPHud';
+	
+	ForEach AllActors( class'baseCam', cam )
+		break;
+	if( cam == none )
+		cam = spawn( class'baseCam' );
+
+	viewClass(class'baseCam', true);
+	//viewClass(class 'BaseCam', true);
+  	// @PAB added new camera target
+  	//makeCamTarget();	//not needed -AdamJD
+
+	// Harry gets a shadow, bigger than normal.
+	Shadow = Spawn(ShadowClass,self);
+	log( self$ " ShadowClass=" $ShadowClass$ " shadow=" $Shadow$ " tex=" $Shadow.Texture );
+
+// @PAB temp give a spell to Harry
+	//baseWand(weap).addSpell(Class'spellDud'); //not needed -AdamJD
+//	baseWand(weap).addSpell(Class'spellflip');
+//	baseWand(weap).addSpell(Class'spellALOho');
+//	baseWand(weap).SelectSpell(Class'spellFlip');
+
+	HarryAnimChannel = cHarryAnimChannel( CreateAnimChannel(class'cHarryAnimChannel', AT_Replace, 'harry spine1') );
+	HarryAnimChannel.SetOwner( self );
+	
+	basewand(weapon).ChooseSpell( SPELL_None ); //set wand to no spell when first loaded -AdamJD
+}
+
+//Play a sound client side (so only client will hear it)
 simulated function ClientPlaySound(sound ASound, optional bool bInterrupt, optional bool bVolumeControl )
 {	
 	local actor SoundPlayer;
@@ -149,7 +228,6 @@ simulated function ClientPlaySound(sound ASound, optional bool bInterrupt, optio
 	SoundPlayer.PlaySound(ASound, SLOT_Talk, 16.0, bInterrupt);
 }
 
-
 function DebugState()
 {
 //	BaseHUD(MyHUD).DebugString2 = string(GetStateName());
@@ -159,7 +237,7 @@ function DebugState()
 }
 
 function TurnDebugModeOn()
-{
+{	
 	hpconsole(player.console).bDebugMode = true;
 }
 
@@ -187,10 +265,10 @@ function TakeDamage( int Damage, Pawn instigatedBy, Vector hitlocation,
 		if( DamageType == 'ZonePain' || DamageType == 'pit' )
 		{
 			//AE:
-			//if( FRand() < 0.5 )
-			//	theNarrator.FindEmote("EmotiveHarry13", snd);
-			//else
-			//	theNarrator.FindEmote("EmotiveHarry14", snd);
+			// if( FRand() < 0.5 )
+				// theNarrator.FindEmote("EmotiveHarry13", snd);
+			// else
+				// theNarrator.FindEmote("EmotiveHarry14", snd);
 
 			PlaySound( snd );
 
@@ -400,6 +478,7 @@ function DoJump( optional float F )
 {
 	local baseProps  a;
 	local float      TmpJumpZ;
+	local float 	 s; //AdamJD local float
 
 	if( bKeepStationary )
 		return;
@@ -427,6 +506,8 @@ function DoJump( optional float F )
 */
 		TmpJumpZ = JumpZ;
 
+		//not needed -AdamJD
+		/*
 		//See if you're standing on a double jump actor
 		//foreach TouchingActors( class'baseProps', a )
 		foreach allactors( class'baseProps', a )
@@ -444,11 +525,20 @@ function DoJump( optional float F )
 				break;
 			}
 		}
+		*/
 		
 		Velocity.Z += TmpJumpZ;
 
 		if ( (Base != Level) && (Base != None) )
-			Velocity += Base.Velocity; 
+			Velocity += Base.Velocity;
+		
+		//let player cast if jumping -AdamJD
+		if (bPlayerCasting)
+		{
+			HarryAnimType = AT_Replace;
+			HarryAnimChannel.GotoStateCasting();
+			PlayAnim('jump');
+		}
 
 		SetPhysics(PHYS_Falling);
 	}
@@ -541,7 +631,7 @@ function Gasp()
 
 function PlayTurning()
 {
-	PlayAnim('Turn', [Type] HarryAnimType);
+	PlayAnim('Turn', [Type] HarryAnimType); 
 }
 
 function TweenToRunning(float tweentime)
@@ -549,15 +639,18 @@ function TweenToRunning(float tweentime)
 	local vector X,Y,Z, Dir;
 
 	BaseEyeHeight = Default.BaseEyeHeight;
-
-	if (bIsWalking)
-	{
-		TweenToWalking(0.1);
-		return;
-	}
-
+	
+	//not needed -AdamJD
+	// if (bIsWalking)
+	// {
+		// TweenToWalking(0.1);
+		// return;
+	// }
+	
 	GetAxes(Rotation, X,Y,Z);
 	Dir = Normal(Acceleration);
+	//old retail code -AdamJD
+	/*
 	if ( (Dir Dot X < 0.75) && (Dir != vect(0,0,0)) )
 	{
 		// strafing or backing up
@@ -565,12 +658,12 @@ function TweenToRunning(float tweentime)
 		{
 			PlayAnim('runback', 0.9, tweentime, HarryAnimType );
 			bMovingBackwards=true;
-			//Velocity.X = Velocity.X / 2;
+			//Velocity.X /= 2;
 		}
 		else if ( Dir Dot Y > 0 )
 		{
 			PlayAnim('StrafeRight', 0.9, tweentime, HarryAnimType );
-			//Velocity.Y 
+			//Velocity.Y /=2;
 		}
 		else
 			PlayAnim('StrafeLeft', 0.9, tweentime, HarryAnimType );
@@ -579,11 +672,51 @@ function TweenToRunning(float tweentime)
 	{
 		PlayAnim('run', 0.9, tweentime, HarryAnimType );
 		bMovingBackwards=false;
-	 }
+	}
+	*/
+	
+	//code copied from PlayRunning -AdamJD
+	if ( (Dir Dot X < 0.75) && (Dir != vect(0,0,0)) )
+	{
+		// strafing or backing up
+		if ( Dir Dot X < -0.75 )
+		{
+			LoopAnim('runback', [Type] HarryAnimType);
+			bMovingBackwards=true; 
+			//Velocity.X /= 2;
+		}
+		else if ( Dir Dot Y > 0 )
+		{
+			LoopAnim('StrafeRight', [Type] HarryAnimType);
+			//clientmessage("strafe right");
+			//Velocity.Y /= 2;
+		}
+		else
+		{
+			LoopAnim('StrafeLeft', [Type] HarryAnimType); 
+		}
+	}
+	
+	//player has pressed the forward input so play the run anim -AdamJD
+	else if ( Dir Dot X >= 0.75 && (Dir != vect(0,0,0)) )
+	{
+		LoopAnim('run', [Type] HarryAnimType);
+		bMovingBackwards=false; 
+	}
+	
+	//stops Harry if player is pressing left and right inputs at the same time -AdamJD
+	else
+	{
+		LoopAnim('breath', [Type] HarryAnimType);
+		Dir = vect(0,0,0);
+	}
 }
 
 function PlayRunning()
 {
+	TweenToRunning( 0 );
+	//not needed -AdamJD
+	/*
 	local vector X,Y,Z, Dir;
 
 	BaseEyeHeight = Default.BaseEyeHeight;
@@ -599,12 +732,13 @@ function PlayRunning()
 		{
 			LoopAnim('runback', [Type] HarryAnimType);
 			bMovingBackwards=true;
-			Velocity.X = Velocity.X / 2;
+			//Velocity.X /= 2;
 		}
 		else if ( Dir Dot Y > 0 )
 		{
 			LoopAnim('StrafeRight', [Type] HarryAnimType);
-			clientmessage("strafe right");
+			//clientmessage("strafe right");
+			//Velocity.Y /= 2;
 		}
 		else
 		{
@@ -615,9 +749,7 @@ function PlayRunning()
 	{
 		LoopAnim('run', [Type] HarryAnimType);
 		bMovingBackwards=false;
-
-	}
-	
+	}*/
 }
 
 
@@ -630,9 +762,10 @@ function PlayinAir()
 		{
 			bPlayedFallSound = true;
 			PlaySound( sound'HPSounds.HAR_emotes.falldeep2' );
+
 		}
 	}
-
+	
 	loopAnim('fall');
 }
 
@@ -650,6 +783,20 @@ function PlayCrawling()
 	LoopAnim('SneakF');
 }
 
+//stop Harry walking with his arms down after playing the cast anim (he walked like a penguin...) -AdamJD
+function PlayFinishCastAnim()
+{
+	LoopAnim('breath', 0.10, 0.5, HarryAnimType);
+	gotoState('PlayerWalking');
+}
+
+//stop Harry walking with his arms up after throwing a wizard cracker -AdamJD
+function PlayFinishThrowCrackerAnim()
+{
+	LoopAnim('breath', 0.10, 0.5, HarryAnimType);
+	gotoState('PlayerWalking');
+}
+
 function PlayWaiting()
 {
 	local name newAnim;
@@ -659,59 +806,62 @@ function PlayWaiting()
 
 		//keep idle from happening as soon as a level loads
 	WaitingCount++;
-	if(WaitingCount<2)	//do breath first three times you get here.
-		{
-		LoopAnim('breath', 0.4 + 0.4 * FRand(), 0.25, , HarryAnimType);
-		return;
-		}
+	if(!bPlayerCasting) //don't do this if casting -AdamJD
+	{
+		if(WaitingCount<2)	//do breath first three times you get here.
+			{
+			LoopAnim('breath', 0.4 + 0.4 * FRand(), 0.25, , HarryAnimType);
+			return;
+			}
 
-	if ( FRand() < 0.3)
-	{
-		LoopAnim('breath', 0.4 + 0.4 * FRand(), 0.25, , HarryAnimType);
-	}
-	else if(FRand() < 0.03 )
-	{
-		WaitingCount=0;
-		PlayAnim('Look', 0.5 + 0.5 * FRand(), 0.3, HarryAnimType);
-	}
-	else if(FRand() < 0.03 )
-	{
-		WaitingCount=0;
-		PlayAnim('Scratch', 0.5 + 0.5 * FRand(), 0.3, HarryAnimType);
-	}
-	else if(FRand() < 0.03 )
-	{
-		WaitingCount=0;
-		PlayAnim('Scratch', 0.5 + 0.5 * FRand(), 0.3, HarryAnimType);
-	}
-	else if(FRand() < 0.03 )
-	{
-		WaitingCount=0;
-		PlayAnim('lookwand', 0.5 + 0.5 * FRand(), 0.3, HarryAnimType);
-	}
-	else if(FRand() < 0.03 )
-	{
-		WaitingCount=0;
-		PlayAnim('adjustglasses', 0.5 + 0.5 * FRand(), 0.3, HarryAnimType);
-	}
-	else if(FRand() < 0.03 )
-	{
-		WaitingCount=0;
-		PlayAnim('look2', 0.5 + 0.5 * FRand(), 0.3, HarryAnimType);
-	}
-	else if(FRand() < 0.03 )
-	{
-		WaitingCount=0;
-		PlayAnim('look3', 0.5 + 0.5 * FRand(), 0.3, HarryAnimType);
-	}
-	else if(FRand() < 0.03 )
-	{
-		WaitingCount=0;
-		PlayAnim('look4', 0.5 + 0.5 * FRand(), 0.3, HarryAnimType);
-	}
-	else
-	{
-		LoopAnim('breath', 0.4 + 0.4 * FRand(), 0.25, , HarryAnimType);
+		if ( FRand() < 0.3)
+		{
+			LoopAnim('breath', 0.4 + 0.4 * FRand(), 0.25, , HarryAnimType);
+		}
+		else if(FRand() < 0.03 )
+		{
+			WaitingCount=0;
+			PlayAnim('Look', 0.5 + 0.5 * FRand(), 0.3, HarryAnimType);
+		}
+		else if(FRand() < 0.03 )
+		{
+			WaitingCount=0;
+			PlayAnim('Scratch', 0.5 + 0.5 * FRand(), 0.3, HarryAnimType);
+		}
+		else if(FRand() < 0.03 )
+		{
+			WaitingCount=0;
+			PlayAnim('Scratch', 0.5 + 0.5 * FRand(), 0.3, HarryAnimType);
+		}
+		else if(FRand() < 0.03 )
+		{
+			WaitingCount=0;
+			PlayAnim('lookwand', 0.5 + 0.5 * FRand(), 0.3, HarryAnimType);
+		}
+		else if(FRand() < 0.03 )
+		{
+			WaitingCount=0;
+			PlayAnim('adjustglasses', 0.5 + 0.5 * FRand(), 0.3, HarryAnimType);
+		}
+		else if(FRand() < 0.03 )
+		{
+			WaitingCount=0;
+			PlayAnim('look2', 0.5 + 0.5 * FRand(), 0.3, HarryAnimType);
+		}
+		else if(FRand() < 0.03 )
+		{
+			WaitingCount=0;
+			PlayAnim('look3', 0.5 + 0.5 * FRand(), 0.3, HarryAnimType);
+		}
+		else if(FRand() < 0.03 )
+		{
+			WaitingCount=0;
+			PlayAnim('look4', 0.5 + 0.5 * FRand(), 0.3, HarryAnimType);
+		}
+		else
+		{
+			LoopAnim('breath', 0.4 + 0.4 * FRand(), 0.25, , HarryAnimType);
+		}
 	}
 }
 
@@ -737,10 +887,23 @@ function Cast()
 	defaultAngle.pitch = 0;
 	defaultYaw = defaultAngle.yaw;
 	defaultYaw = defaultYaw & 0xffff;
+	
+	//old code by me -AdamJD
+	/*
+	bOldStrafingState = (bStrafe != 0);
+
+	MovementMode(true);
+	
+	if (bPressedJump) 
+	{
+		DoJump();
+		bPressedJump = false;
+	}
+	*/
 
 	if (defaultyaw > 0x7fff)
 	{
-		defaultyaw = defaultyaw - 0x10000;
+		defaultyaw -= 0x10000;
 	}
 
 	bestTarget = none;
@@ -789,20 +952,15 @@ function Cast()
 	}
 	
 	//Weapon.AltFire(1.0);
-	rectarget.destroy();
+	rectarget.destroy(); 
+	//turn off wand casting -AdamJD
+	basewand(weapon).bCasting=false;
 }
 
 
 // The player wants to fire.
 exec function Fire( optional float F )
-{
-
-	if( Weapon!=None && bJustFired  == false)
-	{
-	
-		Weapon.bPointing = true;
-		//PlayAnim('wave');
-	}
+{	
 	bJustFired = true;
 }
 
@@ -813,9 +971,20 @@ exec function AltFire( optional float F )
 	local rotator r;
 
 	// If Harry is frozen, disable firing
-
-	if (IsInState('HarryFrozen') || Physics == PHYS_Falling || baseHud(myhud).bCutSceneMode == true)
+	if (IsInState('HarryFrozen') || baseHud(myhud).bCutSceneMode == true) //|| Physics == PHYS_Falling //can now cast when falling -AdamJD
 	{
+		//stop casting if in cutscene/Harry is frozen (can't get cursor to turn off, pissing me off) -AdamJD
+		//Update: Putting this in PlayerWalking instead fixed it... -AdamJD
+		/*
+		if(bPlayerCasting == true)
+		{
+			baseWand(weapon).bPointing = false;
+			basewand(weapon).bCasting=false;
+			baseWand(weapon).WandEffect.bHidden = true;
+			rectarget.destroy();
+			return;
+		}
+		*/
 		return;
 	}
 
@@ -834,20 +1003,52 @@ exec function AltFire( optional float F )
 	else
 	{
 		if(   Weapon != None
-		   && bJustAltFired == false
+		   //&& bJustAltFired == false
 		   && CarryingActor == none   //you're not carrying an actor in your hand
+		   && !bPlayerCasting //player is not already casting -AdamJD
 		  )
 		{
-			ClientMessage("Harry::AltFire");
-			Weapon.bPointing = true;
+			//ClientMessage("Harry::AltFire");
+			//Weapon.bPointing = true;
 			//	PlaySound(sound'spell1', SLOT_Interact, 2.2, false, 1000.0, 1.0);
 			//	weapon.altfire(1);
-
-			bJustAltFired = true;
-			gotostate('playeraiming');
+			
+			//turn on player casting -AdamJD
+			//bJustAltFired = true;
+			bPlayerCasting = true;
+			// Weapon.bPointing = true;
+			//basewand(weapon).bCasting=true;
+			StartCasting();
+			//gotostate('playeraiming'); 
+		}
+		
+		//turn off player casting -AdamJD
+		else 
+		{
+			//Weapon.bPointing = false;
+			bPlayerCasting = false;
+			StopCasting();
 		}
 	}
+}
 
+//AdamJD
+function StartCasting()
+{
+	//leaving this empty goes to the StartCasting function in state PlayerWalking instead 
+}
+
+//AdamJD
+function StopCasting()
+{
+	//leaving this empty goes to the StopCasting function in state PlayerWalking instead 
+}
+
+//stop spell/wand noises -AdamJD
+function StopSoundFX()
+{
+	StopSound(sound'HPSounds.Magic_sfx.spell_build_nl2', SLOT_Misc);
+	StopSound(sound'HPSounds.Magic_sfx.spell_loop_nl', SLOT_Interact);
 }
 
 event Mount( vector Delta )
@@ -855,15 +1056,40 @@ event Mount( vector Delta )
 	// Use Destination to store dest, as moveTo won't be called here.
 	Destination = Location+Delta;
 	MountBase = Base;
+			
 	if( Physics == PHYS_Falling )
 	{
 		bFallingMount = true;
 		gotoState('FallingMount');
+		
+		//stop Harry casting when climbing -AdamJD
+		if(bPlayerCasting == true)
+		{
+			bPlayerCasting = false;
+			StopCasting();
+			baseWand(weapon).bPointing = false;
+			basewand(weapon).bCasting=false;
+			baseWand(Weapon).WandEffect.bHidden = true;
+			rectarget.destroy();
+			StopSoundFX();
+		}
 	}
 	else
 	{
 		bFallingMount = false;
 		gotoState('Mounting');
+		
+		//stop Harry casting when climbing -AdamJD
+		if(bPlayerCasting == true)
+		{
+			bPlayerCasting = false;
+			StopCasting();
+			baseWand(weapon).bPointing = false;
+			basewand(weapon).bCasting=false;
+			baseWand(Weapon).WandEffect.bHidden = true;
+			rectarget.destroy();
+			StopSoundFX();
+		}
 	}
 }
 
@@ -874,7 +1100,9 @@ state FallingMount
 	event PlayerTick( float DeltaTime )
 	{
 		global.PlayerTick( DeltaTime );
-
+		
+		DesiredRotation.Pitch = 0; //copied from the HP2 proto -AdamJD
+		
 		// Adjust destination by player and base movement.
 		Destination.X += Location.X - OldLocation.X;
 		Destination.Y += Location.Y - OldLocation.Y;
@@ -900,9 +1128,11 @@ state FallingMount
 	function Landed(vector HitNormal)
 	{
 		PlaySound(Sound'HPSounds.HAR_emotes.landing5', SLOT_Interact,1, false, 1000.0, 0.9);
-		gotoState('Mounting');
+		//gotoState('Mounting'); //not needed -AdamJD
 	}
-
+	
+	//not needed -AdamJD
+	/*
 	function BeginState()
 	{
 		DebugState();
@@ -910,15 +1140,28 @@ state FallingMount
 		// Start tweening to proper animation.
 		playAnim('climb96end', [Rate] 0, [TweenTime] 0.5, [RootBone] 'move');
 	}
+	*/
 
 begin:
 	// Start turning here as well.
-	TurnTo( vec(Destination.X, Destination.Y, Location.Z) );
+	//TurnTo( vec(Destination.X, Destination.Y, Location.Z) ); //not needed -AdamJD
+	
+	//copied from the HP2 proto -AdamJD
+	DesiredRotation.Yaw = rotator( vec(Destination.X, Destination.Y, Location.Z) - Location ).yaw;
+	DesiredRotation.Pitch = 0; 
+	gotoState ('Mounting'); 
 }
 
 state Mounting
 {
 	ignores Mount, AltFire;
+	
+	//copied from the HP2 proto -AdamJD
+	event PlayerTick( float DeltaTime )
+	{
+		global.PlayerTick( DeltaTime );
+		DesiredRotation.Pitch = 0;
+	}
 
 	function ProcessMove(float DeltaTime, vector NewAccel, eDodgeDir DodgeMove, rotator DeltaRot)
 	{
@@ -940,12 +1183,16 @@ state Mounting
 begin:
 	// Finish turning.
 	TurnTo( vec(Destination.X, Destination.Y, Location.Z) );
+	
+	DesiredRotation.Pitch = 0; //copied from the HP2 proto -AdamJD
 
 	MountDelta = Destination - Location;
 
 	// Subtract anim movement from delta.
 	MountDelta -= vect(30,0,0) >> Rotation;
-
+	
+	//original mounting code -AdamJD
+	/*
 	if( bFallingMount )
 	{
 		MountDelta.Z -= 82;
@@ -965,6 +1212,34 @@ begin:
 		PlaySound( sound'HPSounds.HAR_emotes.EmotiveHarry5_a_pullup5', , 0.5 );
 	}
 	else
+	{
+		MountDelta.Z -= 96;
+		playAnim('climb96start', [RootBone] 'move');
+	}
+	*/
+	
+	if( MountDelta.Z < 48 ) //for climbing from a short distance -AdamJD
+	{
+		MountDelta.Z -= 32;
+		playAnim('climb32', [Rate] 1.0, [RootBone] 'move');
+		PlaySound( sound'HPSounds.HAR_emotes.EmotiveHarry5_b_pullup6', , 0.5 );
+	}
+	
+	else if ((MountDelta.Z >=48) && (MountDelta.Z < 80)) //for climbing from a medium distance -AdamJD
+	{
+		MountDelta.Z -= 64;
+		playAnim('climb64', [RootBone] 'move');
+		PlaySound( sound'HPSounds.HAR_emotes.EmotiveHarry5_a_pullup5', , 0.5 );
+	}
+	
+	else if ((MountDelta.Z >=80) && (MountDelta.Z < 98)) //for climbing from a long distance -AdamJD
+	{
+		MountDelta.Z -= 82;
+		playAnim('climb96end', [RootBone] 'move');
+		PlaySound( sound'HPSounds.HAR_emotes.pull_up3', , 0.5 );
+	}
+	
+	else //for climbing from a really long distance -AdamJD
 	{
 		MountDelta.Z -= 96;
 		playAnim('climb96start', [RootBone] 'move');
@@ -1026,6 +1301,18 @@ begin:
 	// Play idle anim in case nothing's happening.
 	playAnim('breath');
 	gotostate('PlayerWalking');
+	
+	//stop casting a spell after climbing something -AdamJD
+	if(bPlayerCasting == true)
+	{
+		bPlayerCasting = false;
+		StopCasting();
+		baseWand(weapon).bPointing = false;
+		basewand(weapon).bCasting=false;
+		baseWand(Weapon).WandEffect.bHidden = true;
+		rectarget.destroy();
+		StopSoundFX();
+	}
 }
 
 //********************************************************************************************
@@ -1076,6 +1363,12 @@ state hit
 
 		if( AnimSequence != 'knockback2' )
 			playanim('knockback2',[RootBone] 'move');
+		
+		//Harry used to freeze when getting hit by something and casting at the same time -AdamJD		
+		if (bPlayerCasting)
+		{
+			gotostate('PlayerWalking'); 
+		}
 	
 //		sleep(0.5);
 	
@@ -1138,7 +1431,6 @@ function DropCarryingActor()
 }
 
 //********************************************************************************************
-
 state PickingUpWizardCard
 {
 	ignores AltFire;
@@ -1149,6 +1441,18 @@ state PickingUpWizardCard
 		aStrafe  = 0;
 		aLookup  = 0;
 		aTurn    = 0;
+		
+		//turn off spell cursor if picking up wizard card -AdamJD
+		if(bPlayerCasting == true)
+		{
+			bPlayerCasting = false;
+			StopCasting();
+			baseWand(weapon).bPointing = false;
+			basewand(weapon).bCasting=false;
+			baseWand(weapon).WandEffect.bHidden = true;
+			rectarget.destroy();
+			StopSoundFX();
+		}
 	}
 
 	function AnimEnd()
@@ -1167,7 +1471,7 @@ state PickingUpWizardCard
 			GroundSpeed = fOldGroundSpeed;
 //			basehud(myhud).DebugString2 = "Leaving Picking up wizard card " $LastState;
 			cam.gotostate('StandardState');
-			RestoreStateName();
+			// RestoreStateName(); //not needed -AdamJD
 		}
 	}
 
@@ -1192,12 +1496,18 @@ begin:
 	GroundSpeed = 0;
 	cam.gotostate('RotateAroundHarry');
 	PlayAnim('wizardcardcollect');
+	FinishAnim(); //let Harry finish the anim -AdamJD
+	DesiredRotation.Yaw = ViewRotation.Yaw; //fixes the bug where Harry walked with his face down toward the ground after jumping into a card -AdamJD
+	DesiredRotation.Pitch = ViewRotation.Pitch; //fixes the bug where Harry walked with his face down toward the ground after jumping into a card -AdamJD
+	gotoState('PlayerWalking'); //go back to the PlayerWalking state -AdamJD
 }
-
 //********************************************************************************************
-state playeraiming
+//old not needed retail playeraiming state -AdamJD
+/*state playeraiming
 {
-	ignores SeePlayer, HearNoise, Bump;
+
+ignores SeePlayer, HearNoise, Bump;
+	
 
 	// AE:
 	function StartSoundFX()
@@ -1214,7 +1524,7 @@ state playeraiming
 
 		StopSound(sound'HPSounds.Magic_sfx.spell_loop_nl', SLOT_Interact);
 	}
-
+	
 	function BeginState()
 	{
 		//setphysics(phys_rotating);
@@ -1223,10 +1533,17 @@ state playeraiming
 
 //		basehud(myhud).DebugString2 = "in playeraiming";
 
-//		bOldStrafingState = (bStrafe != 0);
+		bOldStrafingState = (bStrafe != 0);
 
-//		MovementMode(true);
-//		PlaySound(sound'HPSounds.Magic_sfx.HAR_raise_arm', SLOT_Misc);
+		MovementMode(false);
+		
+		// if ( bPressedJump )
+		// {
+			// DoJump();			// jumping
+			// bPressedJump = false;
+			// return;
+		// }
+		//PlaySound(sound'HPSounds.Magic_sfx.HAR_raise_arm', SLOT_Misc);
 
 		StartSoundFX();
 	}
@@ -1240,11 +1557,11 @@ state playeraiming
 		bIsCrouching = false;
 		//setphysics(phys_walking);
 
-/*		if (!bOldStrafingState)
+		if (!bOldStrafingState)
 		{
 			MovementMode(false);
 		}
-*/
+
 		//bStrafe = 0;
 		//bLockedOnTarget = false;
 		//BossTarget = none;
@@ -1254,10 +1571,19 @@ state playeraiming
 //		basehud(myhud).DebugString2 = "out of playeraiming";
 		bJustFired = false;
 		bJustAltFired =  false;
+		
+		basewand(weapon).bCasting=false;	
+		
+		// if ( bPressedJump )
+		// {
+			//DoJump();			// jumping
+			// bPressedJump = false;
+		// }
 	}
 
 	exec function AltFire( optional float F )
 	{
+
 	}
 
 	function AnimEnd()
@@ -1272,9 +1598,20 @@ state playeraiming
 			ClientUpdatePosition();
 
 		PlayerMove(DeltaTime);
+		
+		bOldStrafingState = (bStrafe != 0);
 
+		MovementMode(true);
+		
+		// if ( bPressedJump )
+		// {
+			// DoJump();			// jumping
+			// PlayAnim('Jump');
+			// bPressedJump = false;
+			// gotostate('playeraiming');
+		// }
 	}
-
+	
 	function PlayerMove( float DeltaTime )
 	{
 		local vector X,Y,Z, NewAccel;
@@ -1288,6 +1625,7 @@ state playeraiming
 		GetAxes(Rotation,X,Y,Z);
 
 		aForward *= 0.08;
+		
 		if( Physics == PHYS_Falling || bLockedOnTarget)
 		{
 			aStrafe  *= 0.4;
@@ -1366,9 +1704,11 @@ state playeraiming
 			}
 		}
 
-		//if ( bPressedJump )
-		//	DoJump();			// jumping
-
+		// if ( bPressedJump )
+		// {
+			// DoJump();			// jumping
+			// bPressedJump = false;
+		// }
 		if ( (Physics == PHYS_Walking)  )
 		{
 			if ( !bIsCrouching )
@@ -1399,7 +1739,7 @@ state playeraiming
 						
 						///bPlayerWalking = false;
 
-						if( /*!bIsTurning &&*/ (GetAnimGroup(AnimSequence) != 'Waiting')) 
+						if( !bIsTurning && (GetAnimGroup(AnimSequence) != 'Waiting')) 
 						{
 							bAnimTransition = true;
 							TweenToWaiting(0.2);
@@ -1454,18 +1794,53 @@ state playeraiming
 			while( AnimFrame < 0.95 )
 				sleep( 0.001 );
 
-			basewand(weapon).bCasting=false;		//turn on the sparkles.
+			basewand(weapon).bCasting=true;		//turn on the sparkles.
 		
 			gotostate('PlayerWalking');
 		}
 		sleep(0.001);
 		goto 'loopaim';
+		
+}*/
+//********************************************************************************************
+//Old casting states set up by me (moved to cHarryAnimChannel class) -AdamJD
+/*
+state stateCasting
+{
+	begin:
+	HarryAnimType = AT_Combine;
+	LoopAnim('wave', 1.0, 0.2); 
+	gotoState('PlayerWalking');
 }
 
+state stateCancelCasting
+{
+  begin:
+	PlayAnim('cast', 1.0, 0.2); //can't find a way to play no anims... -AdamJD
+	FinishAnim();
+
+	StopCasting();	
+	gotoState('PlayerWalking');
+}
+
+state stateCast
+{
+	function BeginState()
+	{
+  		PlayAnim('cast', 2.0, 0.1);
+	}
+
+  begin:
+	FinishAnim();
+	
+	StopCasting();
+	gotoState('PlayerWalking');
+} 
+*/
 //********************************************************************************************
 state PlayerWalking
 {
-ignores SeePlayer, HearNoise, Bump;
+ignores SeePlayer, HearNoise, Bump; 
 
 	function ZoneChange( ZoneInfo NewZone )
 	{
@@ -1511,7 +1886,7 @@ ignores SeePlayer, HearNoise, Bump;
 		}
 
 		if (Physics == PHYS_Walking)
-		{
+		{			
 			if (bIsCrouching)
 			{
 				if ( !bIsTurning && ((Velocity.X * Velocity.X + Velocity.Y * Velocity.Y) < 1000) )
@@ -1529,25 +1904,26 @@ ignores SeePlayer, HearNoise, Bump;
 					else
 					{
 						bAnimTransition = true;
-						TweenToWaiting(0.2);
+						TweenToWaiting(0.4);
 					}
 				}	
 				else if (bIsWalking)
 				{
 					if ( (MyAnimGroup == 'Waiting') || (MyAnimGroup == 'Landing')   )
 					{
-						TweenToWalking(0.1);
+						TweenToWalking(0.4);
 						bAnimTransition = true;
 					}
 					else 
 						PlayWalking();
 				}
+				
 				else
 				{
 					if ( (MyAnimGroup == 'Waiting') || (MyAnimGroup == 'Landing')  )
 					{
 						bAnimTransition = true;
-						TweenToRunning(0.1);
+						TweenToRunning(0.4);
 					}
 					else
 						PlayRunning();
@@ -1561,7 +1937,7 @@ ignores SeePlayer, HearNoise, Bump;
 		}
 
 	}
-
+	
 	function Landed(vector HitNormal)
 	{
 		clientMessage("landed: jump dist = " $VSize(Location-MountDelta) $ "   tia="$fTimeInAir);
@@ -1571,14 +1947,103 @@ ignores SeePlayer, HearNoise, Bump;
 		PlayLandedSound();
 
 		playanim('land1');
+		
+		//allow player to cast when landing -AdamJD
+		if (bPlayerCasting)
+		{
+			HarryAnimType = AT_Combine;
+			HarryAnimChannel.GotoStateCasting();
+		}
 
 //		log("PLOG PWalking landed");
 	}
 	
+	//PlayerAim start and stop sound functons -AdamJD
+	function StartSoundFX()
+	{
+		PlaySound(sound'HPSounds.Magic_sfx.spell_build_nl2', SLOT_Misc);
+		PlaySound(sound'HPSounds.Magic_sfx.spell_loop_nl', SLOT_Interact);
+	}
+
+	function StopSoundFX()
+	{
+		StopSound(sound'HPSounds.Magic_sfx.spell_build_nl2', SLOT_Misc);
+		StopSound(sound'HPSounds.Magic_sfx.spell_loop_nl', SLOT_Interact);
+	}
+	
+	//turn on player casting -AdamJD
+	function StartCasting()
+	{
+		//setup the casting stuff
+		if (bPlayerCasting && CarryingActor == none ) //&& Physics == PHYS_Walking) //can now cast when jumping -AdamJD
+		{
+			//LoopAnim('wave', 2.0, 0.1);
+			//MovementMode(true); //now not needed because you can now move the camera while casting! 
+			Weapon.bPointing = true;
+			basewand(weapon).bCasting=true;
+			baseWand(Weapon).WandEffect.bHidden = false;
+			bJustFired = false;
+			bJustAltFired = false;
+			hpconsole(player.console).bspaceReleased=false;
+			hpconsole(player.console).bSpacePressed = false;
+			StartSoundFX();
+			makeTarget();
+			//HarryAnimType = AT_Combine;
+			HarryAnimChannel.GotoStateCasting();
+			// bCastFastSpells = true; 
+		}
+		
+		//go to the StopCasting function if the player has just pressed the wand input
+		if( HarryAnimChannel.AnimSequence == 'cast' )
+		{
+			//LoopAnim('breath');
+			StopCasting();
+		}
+	}
+	
+	//turn off player casting -AdamJD
+	function StopCasting()
+	{
+		//if the player has just pressed the wand input then let Harry finish his anim and turn off the casting stuff until he has finished
+		if( HarryAnimChannel.AnimSequence == 'cast' )
+		{
+			//LoopAnim('breath');
+			HarryAnimChannel.GotoStateHasCast();
+			Weapon.bPointing = false;
+			basewand(weapon).bCasting=false;
+			baseWand(Weapon).WandEffect.bHidden = true;
+			rectarget.destroy();
+			StopSoundFX();
+			bPlayerCasting = false;
+		}
+		
+		//otherwise stop the casting stuff altogether
+		else
+		{
+			Weapon.bPointing = false;
+			basewand(weapon).bCasting=false;
+			baseWand(Weapon).WandEffect.bHidden = true;
+			rectarget.destroy();
+			StopSoundFX();
+			//bJustFired = true;
+			//bJustAltFired = true;
+			bPlayerCasting = false;
+			//gotoState('PlayerWalking');
+			//HarryAnimType = AT_Combine;
+			HarryAnimChannel.GotoStateCancelCasting();
+			// bCastFastSpells = false; 
+		}
+	}
+	
 	event PlayerTick( float DeltaTime )
 	{
-		local baseChar a;
-
+		local baseChar a; 
+		
+		Global.PlayerTick( DeltaTime ); //update playertick -AdamJD
+		
+		foreach allActors(class'BaseCam', cam)
+			break;
+		
 		if( bTempKillHarry )// ||  lifePotions <= 0 )
 		{
 			bTempKillHarry = false;
@@ -1592,9 +2057,24 @@ ignores SeePlayer, HearNoise, Bump;
 			KillHarry(true);
 			return;
 		}
+		
+		//stop casting if in cutscene/Harry is frozen -AdamJD
+		if (baseHud(myhud).bCutSceneMode == true) 
+		{
+			if(bPlayerCasting == true)
+			{
+				bPlayerCasting = false;
+				StopCasting();
+				baseWand(weapon).bPointing = false;
+				basewand(weapon).bCasting=false;
+				baseWand(weapon).WandEffect.bHidden = true;
+				rectarget.destroy();
+				StopSoundFX();
+			}
+		}
 
-		if ( bUpdatePosition )
-			ClientUpdatePosition();
+		// if ( bUpdatePosition )
+			// ClientUpdatePosition();
 
 		//Try and save how long you've been falling, and what you're original height was when you started falling
 		ProcessFalling( DeltaTime );
@@ -1610,7 +2090,7 @@ ignores SeePlayer, HearNoise, Bump;
 		//	bScreenRelativeMovement = !bScreenRelativeMovement;
 		//	ClientMessage("ToggleTab");
 		//}
-
+		
 		if( CarryingActor != none )
 		{
 			//r = weaponRot;
@@ -1625,6 +2105,47 @@ ignores SeePlayer, HearNoise, Bump;
 				hpconsole(player.console).bSpacePressed = false;
 				AltFire(0);
 			}
+		}
+		
+		//the player wants to fire a spell, so let's see if they can -AdamJD
+		if( bPlayerCasting && HarryAnimChannel.IsInState('stateCasting') && bAltFire == 0 ) //&& Physics == PHYS_Walking && GetAnimGroup(AnimSequence) == 'wave' //now not needed
+		{
+			//the player is aiming at a target or victim so cast the spell
+			if ( rectarget.bIsLockedOn == true && (!IsInState('FallingMount')) || (!IsInState('Mounting')) || (!IsInState('MountFinish')) ) //don't cast the spell if Harry has just climbed something or is currently climbing
+			{
+				HarryAnimChannel.GotoStateCast();
+				// StopSoundFX();
+				//PlayAnim('cast', 2.0, 0.1);
+				// Weapon.bPointing = false;
+				// basewand(weapon).bCasting=false;
+				// baseWand(Weapon).WandEffect.bHidden = true; 
+				// rectarget.destroy();
+				// bPlayerCasting = false;
+				//MovementMode(false); //now not needed because you can now move the camera while casting! 
+				StopCasting();
+				//gotoState('PlayerWalking');
+			}
+			
+			//the player is not aiming at a target or victim 
+			else 
+			{
+				// Weapon.bPointing = false;
+				// baseWand(Weapon).WandEffect.bHidden = true; 
+				//loopanim('wave', 2.0 , 0.2);
+				// HarryAnimChannel.GotoStateCancelCasting;
+				// bPlayerCasting = false;
+				// rectarget.destroy();
+				//MovementMode(false); //now not needed because you can now move the camera while casting! 
+				StopCasting();
+				//gotoState('PlayerWalking');
+			}
+		}
+		
+		//HP2 cam code (keeps camera behind Harry) -AdamJD
+		if( cam.IsInState('Standardstate') )
+		{
+			DesiredRotation.Yaw = cam.rotation.Yaw & 0xFFFF;
+			SetRotation( DesiredRotation );
 		}
 	}
 
@@ -1658,10 +2179,14 @@ ignores SeePlayer, HearNoise, Bump;
 		local float Speed2D;
 		local bool	bSaveJump;
 		local name AnimGroupName;
-
-		//if( PotCam(ViewTarget) != none )
-		//	GetAxes(ViewTarget.Rotation,X,Y,Z);
-		//else
+		
+		//find BaseCam -AdamJD
+		foreach allActors(class'BaseCam', cam)
+			break;
+		
+		// if( PotCam(ViewTarget) != none )
+			// GetAxes(ViewTarget.Rotation,X,Y,Z);
+		// else
 
 		if( bReverseInput )  //Right now, just for troll chase.
 		{
@@ -1677,30 +2202,29 @@ ignores SeePlayer, HearNoise, Bump;
 
 		if( Physics == PHYS_Falling  ||  bLockedOnTarget  ||  bFixedFaceDirection )
 		{
-			aStrafe   *= 0.08*2;
+			aStrafe   *= 0.08; //*2; //halved the speed of aStrafe -AdamJD
 			aTurn = 0;
 		}
+		
 		else
-		{
-			aStrafe = 0;
-			aTurn    *= 0.24;
+		{	
+			aStrafe *= 0.08;	
+			aTurn *= 0.24;	
 		}
 
 		aLookup   *= 0;			// make harry steady (no pitching with look up)
-		aSideMove *= 0.1;
-
-		if( bKeepStationary )
-		{
-			aForward = 0;
-			aStrafe = 0;
-		}
+		aSideMove *= 0.1; 
 
 		// Update acceleration.
 		if( bLockedOnTarget  ||  bFixedFaceDirection )
 		{
-			if( aForward < 0 )
-				aForward *= 2;
-
+			//not needed -AdamJD
+			// if( aForward < 0 )
+				// aForward *= 2;
+				
+			//stop Harry turning on his own axis when fighting troll or vold -AdamJD
+			aTurn = 0;
+			
 			//ClientMessage("aForward:" @ aForward @ "   aStrafe:" @ aStrafe);
 			//NewAccel = aForward*X + aStrafe*Y;
 			//ProcessAccel messes with aForward and aStrafe to get a final NewAccel
@@ -1732,22 +2256,54 @@ ignores SeePlayer, HearNoise, Bump;
 				NewAccel = aForward*X + aStrafe*Y; 
 			}
 		}
-
+		
+		//don't move if input is disabled -AdamJD
+		if( bKeepStationary )
+		{
+			aForward = 0;
+			aStrafe = 0;
+		}
+		
 		NewAccel.Z = 0;
 		// Check for Dodge move
 		
 		AnimGroupName = GetAnimGroup(AnimSequence);		
+
 		if ( (Physics == PHYS_Walking) )
 			Speed2D = Sqrt(Velocity.X * Velocity.X + Velocity.Y * Velocity.Y);
 
 		// Update rotation.
 		OldRotation = Rotation;
 
+	//not needed -AdamJD
 		//When you're locked onto a target, or facing down a fixed direction, other rotation code is performed
-		if( !(bLockedOnTarget || bFixedFaceDirection) ) // &&  target != none )
-			UpdateRotation(DeltaTime, 1);
+		//if( !(bLockedOnTarget || bFixedFaceDirection) ) // &&  target != none )
+			//UpdateRotation(DeltaTime, 1); 
 
 		ProcessMove(DeltaTime, NewAccel, DodgeMove, OldRotation - Rotation);
+		
+		//HP2 cam code -AdamJD
+		if( cam.IsInState('StandardState') || cam.IsInState('BossState') )
+		{
+			//Harry will always look at what the camera is looking at
+			DesiredRotation.Yaw = cam.rotation.Yaw & 0xFFFF;
+			SetRotation( DesiredRotation );
+		}
+		
+		//stop casting if in cutscene/Harry is frozen -AdamJD
+		if (baseHud(myhud).bCutSceneMode == true) 
+		{
+			if(bPlayerCasting == true)
+			{
+				bPlayerCasting = false;
+				StopCasting();
+				baseWand(weapon).bPointing = false;
+				basewand(weapon).bCasting=false;
+				baseWand(weapon).WandEffect.bHidden = true;
+				rectarget.destroy();
+				StopSoundFX();
+			}
+		}
 	}
 
 	function ProcessMove(float DeltaTime, vector NewAccel, eDodgeDir DodgeMove, rotator DeltaRot)	
@@ -1763,6 +2319,21 @@ ignores SeePlayer, HearNoise, Bump;
 			Velocity = vect(0,0,0);
 			return;
 		}
+		
+		//stop casting if in cutscene/Harry is frozen -AdamJD
+		if (baseHud(myhud).bCutSceneMode == true) 
+		{
+			if(bPlayerCasting == true)
+			{
+				bPlayerCasting = false;
+				StopCasting();
+				baseWand(weapon).bPointing = false;
+				basewand(weapon).bCasting=false;
+				baseWand(weapon).WandEffect.bHidden = true;
+				rectarget.destroy();
+				StopSoundFX();
+			}
+		}
 
 		if ( bPressedJump )
 		{
@@ -1771,7 +2342,7 @@ ignores SeePlayer, HearNoise, Bump;
 		}
 
 		if ( (Physics == PHYS_Walking)  )
-		{
+		{	
 			if (!bIsCrouching)
 			{
 				if (bDuck != 0)
@@ -1847,24 +2418,59 @@ ignores SeePlayer, HearNoise, Bump;
 		if (Physics != PHYS_Falling) SetPhysics(PHYS_Walking);
 		if ( !IsAnimating() )
 			PlayWaiting();
+		
+		//now not needed -AdamJD
+		/*
+		//AdamJD code start 
+		//can't get camera to move when Harry is casting so this is a hack 
+		if( !bLockedOnTarget )
+		{
+			if (bPlayerCasting == true)
+			{
+				MovementMode(true);
+			}
+		}
+		//AdamJD End
+		*/
+		
+		// foreach allActors(class'BaseCam', cam)
+			// break;
 
-		foreach allActors(class'BaseCam', cam)
-			break;
-
-		//LastWalkYaw = Rotation.yaw;
-		//PlayerMoving = MOVING_NOT;
-		//CamPosYawOffset = 0;
-		//CamTargetYawOffset = 0;
+		// LastWalkYaw = Rotation.yaw;
+		// PlayerMoving = MOVING_NOT;
+		// CamPosYawOffset = 0;
+		// CamTargetYawOffset = 0;
 	}
-	
+		
 	function EndState()
 	{
 //		log("PLOG PWalking Exited");
 		WalkBob = vect(0,0,0);
 		bIsCrouching = false;
+		
+		//stop casting if in cutscene/Harry is frozen -AdamJD
+		if (baseHud(myhud).bCutSceneMode == true) 
+		{
+			if(bPlayerCasting == true)
+			{
+				bPlayerCasting = false;
+				baseWand(weapon).bPointing = false;
+				basewand(weapon).bCasting=false;
+				baseWand(weapon).WandEffect.bHidden = true;
+				rectarget.destroy();
+				StopSoundFX();
+			}
+		}
+		
+		//now not needed -AdamJD
+		/*
+		//if not casting go back to normal movement -AdamJD
+		if (bPlayerCasting == false)
+		{
+			MovementMode(false);
+		}
+		*/
 	}
-
-
 }
 
 //********************************************************************************************
@@ -1907,7 +2513,7 @@ ignores SeePlayer, HearNoise, Bump;
 				hidden=false;
 			}		
 		}
-
+		
 		if (Physics == PHYS_Walking)
 		{
 			if (bIsCrouching)
@@ -1932,7 +2538,7 @@ ignores SeePlayer, HearNoise, Bump;
 				}	
 				else if (bIsWalking)
 				{
-					if ( (MyAnimGroup == 'Waiting') || (MyAnimGroup == 'Landing')   )
+					if ( (MyAnimGroup == 'Waiting') || (MyAnimGroup == 'Landing') )
 					{
 						TweenToWalking(0.1);
 						bAnimTransition = true;
@@ -1942,7 +2548,7 @@ ignores SeePlayer, HearNoise, Bump;
 				}
 				else
 				{
-					if ( (MyAnimGroup == 'Waiting') || (MyAnimGroup == 'Landing')  )
+					if ( (MyAnimGroup == 'Waiting') || (MyAnimGroup == 'Landing') )
 					{
 						bAnimTransition = true;
 						TweenToRunning(0.1);
@@ -1950,20 +2556,23 @@ ignores SeePlayer, HearNoise, Bump;
 					else
 						PlayRunning();
 				}
+				
 			}
 		}
+		
 		else
 		{
 			PlayInAir();
 			
 		}
+		
 
 	}
-
+	
 	event PlayerTick( float DeltaTime )
 	{
 		local baseChar a;
-
+		
 		if( bTempKillHarry )
 		{
 			bTempKillHarry = false;
@@ -1980,6 +2589,49 @@ ignores SeePlayer, HearNoise, Bump;
 			CarryingActor.setLocation( weaponLoc );//- vect(0,0,1 );
 			CarryingActor.SetRotation( weaponRot );
 		}
+		
+		//stop casting on chess board -AdamJD
+		if(bPlayerCasting == true)
+		{
+			bPlayerCasting = false;
+			StopCasting();
+			baseWand(weapon).bPointing = false;
+			basewand(weapon).bCasting=false;
+			baseWand(Weapon).WandEffect.bHidden = true;
+			rectarget.destroy();
+			StopSoundFX();
+		}
+	}
+	
+	//new rotation function for the chess board -AdamJD
+	function UpdateRotationOnChessBoard(float DeltaTime, float maxPitch)
+	{
+		local rotator	NewRotation;
+		local float		YawVal;
+	
+		//get the SmoothMouseX axis and cap it to not overshoot input (only need to care about the SmoothMouseX axis) -AdamJD
+		YawVal = (SmoothMouseX / 1.5) * DeltaTime; 
+		
+		//limit SmoothMouseX -AdamJD 		
+		if(YawVal == SmoothMouseX)
+		{
+			if( YawVal > MAX_MOUSE_DELTA_X )		
+			{
+				YawVal = MAX_MOUSE_DELTA_X;
+			}
+				
+			else if( YawVal < MIN_MOUSE_DELTA_X ) 
+			{
+				YawVal = MIN_MOUSE_DELTA_X;
+			}
+		}
+			
+		ViewRotation.Yaw += YawVal; //set YawVal to ViewRotation.Yaw -AdamJD
+		DesiredRotation.Yaw = ViewRotation.Yaw; //set ViewRotation.Yaw to DesiredRotation.Yaw -AdamJD
+		NewRotation.Yaw = cam.rotation.Yaw; //move Harry and chess marker at the same time when moving mouse left or right -AdamJD
+
+		DesiredRotation = ViewRotation; //set ViewRotation to DesiredRotation -AdamJD
+		setRotation(NewRotation); //use the NewRotation as the camera rotation -AdamJD
 	}
 
 	function PlayerMove( float DeltaTime )
@@ -1992,7 +2644,7 @@ ignores SeePlayer, HearNoise, Bump;
 		local float Speed2D;
 		local bool	bSaveJump;
 		local name AnimGroupName;
-
+		
 		//if( PotCam(ViewTarget) != none )
 		//	GetAxes(ViewTarget.Rotation,X,Y,Z);
 		//else
@@ -2009,6 +2661,7 @@ ignores SeePlayer, HearNoise, Bump;
 			if (aForward > 0)
 			{
 				bChessMoving = true;
+				TweenToRunning(0.4); //make Harry move smoothly -AdamJD
 				return;
 			}
 		}
@@ -2016,10 +2669,12 @@ ignores SeePlayer, HearNoise, Bump;
 		{
 			return;
 		}
-
+		
+		//not needed -AdamJD
+		/*
 		if( bReverseInput )  //Right now, just for troll chase.
 		{
-			//aForward = -aForward;
+			aForward = -aForward;
 			aTurn = -aTurn;
 			aStrafe = -aStrafe;
 		}
@@ -2036,29 +2691,32 @@ ignores SeePlayer, HearNoise, Bump;
 			aStrafe = 0;
 			aTurn    *= 0.24;
 		}
+		*/
 
 		aLookup   *= 0;			// make harry steady (no pitching with look up)
-		aSideMove *= 0.1;
+		// aSideMove *= 0.1; //not needed -AdamJD
 
 		if( bKeepStationary )
 		{
 			aForward = 0;
 			aStrafe = 0;
 		}
-
+		
+		//not needed -AdamJD
+		/*
 		// Update acceleration.
-		if( bLockedOnTarget )
+		if( bLockedOnTarget  )
 		{
-			if( aForward < 0 )
+			if( aForward < 0 ) 
 				aForward *= 2;
 
-			//ClientMessage("aForward:" @ aForward @ "   aStrafe:" @ aStrafe);
-			//NewAccel = aForward*X + aStrafe*Y;
-			//ProcessAccel messes with aForward and aStrafe to get a final NewAccel
+			ClientMessage("aForward:" @ aForward @ "   aStrafe:" @ aStrafe);
+			NewAccel = aForward*X + aStrafe*Y;
+			ProcessAccel messes with aForward and aStrafe to get a final NewAccel
 			NewAccel = ProcessAccel();
-		}
-		else
-		{
+		}*/
+		// else  //not needed -AdamJD
+		// {
 			GetAxes(Rotation,X,Y,Z);
 
 			// Update acceleration.
@@ -2082,7 +2740,7 @@ ignores SeePlayer, HearNoise, Bump;
 			{
 				NewAccel = aForward*X + aStrafe*Y; 
 			}
-		}
+		// }
 
 		NewAccel.Z = 0;
 		// Check for Dodge move
@@ -2091,14 +2749,28 @@ ignores SeePlayer, HearNoise, Bump;
 		if ( (Physics == PHYS_Walking) )
 			Speed2D = Sqrt(Velocity.X * Velocity.X + Velocity.Y * Velocity.Y);
 
+		//not needed -AdamJD
 		// Update rotation.
-		OldRotation = Rotation;
-
+		// OldRotation = Rotation;
+		
 		//When you're locked onto a target, other rotation code is performed
-		if( !bLockedOnTarget ) // &&  target != none )
-			UpdateRotation(DeltaTime, 1);
+		//if( !bLockedOnTarget ) // &&  target != none ) 
+			//UpdateRotation(DeltaTime, 1); 
+			
+		UpdateRotationOnChessBoard(DeltaTime, 1); //new rotation function created by me just for the chess board -AdamJD
+		
+		//stop casting on chess board -AdamJD
+		if(bPlayerCasting == true)
+		{
+			StopCasting();
+			baseWand(weapon).bPointing = false;
+			basewand(weapon).bCasting=false;
+			baseWand(weapon).WandEffect.bHidden = true;
+			rectarget.destroy();
+			StopSoundFX();
+		}
 
-		ProcessMove(DeltaTime, NewAccel, DodgeMove, OldRotation - Rotation);
+		// ProcessMove(DeltaTime, NewAccel, DodgeMove, OldRotation - Rotation); //commented out because this allows Harry to walk off the chess board breaking the game... -AdamJD
 	}
 
 	function ProcessMove(float DeltaTime, vector NewAccel, eDodgeDir DodgeMove, rotator DeltaRot)	
@@ -2159,7 +2831,7 @@ ignores SeePlayer, HearNoise, Bump;
 						//	if ( bIsTurning && (AnimFrame >= 0) ) 
 						//	{
 						//		bAnimTransition = true;
-						//		PlayTurning();
+								//PlayTurning();
 						//	}
 						//}
 			 			//else
@@ -2174,6 +2846,19 @@ ignores SeePlayer, HearNoise, Bump;
 					}
 				}
 			}
+			
+			//stop casting on chess board -AdamJD
+			if(bPlayerCasting == true)
+			{
+				bPlayerCasting = false;
+				StopCasting();
+				baseWand(weapon).bPointing = false;
+				basewand(weapon).bCasting=false;
+				baseWand(Weapon).WandEffect.bHidden = true;
+				rectarget.destroy();
+				StopSoundFX();
+			}
+			
 			else
 			{
 				if ( (OldAccel == vect(0,0,0)) && (Acceleration != vect(0,0,0)) )
@@ -2183,11 +2868,54 @@ ignores SeePlayer, HearNoise, Bump;
 			}
 		}
 	}
-
+	
+	//stop Harry moving and casting when first on the chess board -AdamJD
+	function BeginState()
+	{
+		Acceleration = Vec(0, 0, 0);
+		Velocity = Vec(0, 0, 0);
+		
+		if (Physics == PHYS_Falling) 
+		{
+			SetPhysics(PHYS_Walking);
+			PlayWalking();
+		}
+		
+		else if (bPlayerCasting == true)
+		{
+			bPlayerCasting = false;
+			StopCasting();
+			baseWand(weapon).bPointing = false;
+			basewand(weapon).bCasting=false;
+			baseWand(Weapon).WandEffect.bHidden = true;
+			rectarget.destroy();
+			StopSoundFX();
+			PlayWalking();
+			HarryAnimType = AT_Replace;
+		}
+		
+		else
+		{
+			PlayWalking();
+		}
+	}
+	
 	function EndState()
 	{
 		WalkBob = vect(0,0,0);
 		bIsCrouching = false;
+		
+		//stop casting on chess board -AdamJD
+		if(bPlayerCasting == true)
+		{
+			bPlayerCasting = false;
+			StopCasting();
+			baseWand(weapon).bPointing = false;
+			basewand(weapon).bCasting=false;
+			baseWand(Weapon).WandEffect.bHidden = true;
+			rectarget.destroy();
+			StopSoundFX();
+		}
 	}
 
 begin:
@@ -2203,6 +2931,18 @@ begin:
 		if (Physics != PHYS_Falling) SetPhysics(PHYS_Walking);
 		if ( !IsAnimating() )
 			PlayWaiting();
+		
+		//stop casting on chess board -AdamJD
+		if(bPlayerCasting == true)
+		{
+			bPlayerCasting = false;
+			StopCasting();
+			baseWand(weapon).bPointing = false;
+			basewand(weapon).bCasting=false;
+			baseWand(Weapon).WandEffect.bHidden = true;
+			rectarget.destroy();
+			StopSoundFX();
+		}
 
 		foreach allActors(class'BaseCam', cam)
 			break;
@@ -2229,11 +2969,14 @@ loop:
 }
 
 //**********************************************************************************************
+//now not needed -AdamJD
+/*
 //This is called from 'PlayerWalking' and 'PlayerAim'
 function UpdateRotation(float DeltaTime, float maxPitch)
 {
 	local rotator newRotation;
 	local float   YawVal;
+	local float   YawValY; //local YawValY float -AdamJD
 	local int     RotDist;
 	local float   FastRotRate;
 
@@ -2241,14 +2984,16 @@ function UpdateRotation(float DeltaTime, float maxPitch)
 		return;
 
 	FastRotRate = 70000;
+	
+	YawValY = YawVal; //set YawValY to YawVal -AdamJD
 
 	DesiredRotation = ViewRotation;
 	ViewRotation.Pitch += 32.0 * DeltaTime * aLookUp;
 	ViewRotation.Pitch = ViewRotation.Pitch & 65535;
-
-	If ((ViewRotation.Pitch > 18000) && (ViewRotation.Pitch < 49152))
+	
+	if ((ViewRotation.Pitch > 18000) && (ViewRotation.Pitch < 49152))
 	{
-		If (aLookUp > 0) 
+		if (aLookUp > 0) 
 			ViewRotation.Pitch = 18000;
 		else
 			ViewRotation.Pitch = 49152;
@@ -2285,17 +3030,95 @@ function UpdateRotation(float DeltaTime, float maxPitch)
 			YawVal = -YawVal;
 		}
 	}
+	
 	else
 	{
-		//When you're in state 'PlayerAim', and you're in "circle around the boss" (bLockedOnTarget) mode, this function gets called,
+		// When you're in state 'PlayerAim', and you're in "circle around the boss" (bLockedOnTarget) mode, this function gets called,
 		// and then overridden, with an absolute rot set towards the Boss.
-
-		if(Acceleration == vect(0,0,0))
-			YawVal=32.0 * DeltaTime * aTurn;
+		
+		if(Acceleration == vect(0,0,0)) 
+		{
+			//YawVal= 32.0 * DeltaTime * aTurn; //old retail code -AdamJD
+			
+			//HOLY CRAP- I finally fixed Harry turning when strafing!!! -AdamJD
+			YawVal= (SmoothMouseX / 1.5) * DeltaTime; 
+			// YawValY = (SmoothMouseY / 1.5) * DeltaTime;
+			
+			//for a more smoother Mouse X effect -AdamJD
+			if(YawVal == SmoothMouseX)
+			{
+				if( YawVal > MAX_MOUSE_DELTA_X )		
+				{
+					YawVal = MAX_MOUSE_DELTA_X;
+				}
+				
+				else if( YawVal < MIN_MOUSE_DELTA_X ) 
+				{
+					YawVal = MIN_MOUSE_DELTA_X;
+				}
+			}
+			
+			//for a more smoother Mouse Y effect -AdamJD
+			// if(YawValY == SmoothMouseY)
+			// {
+				// if( YawValY > MAX_MOUSE_DELTA_Y )		
+				// {
+					// YawValY = MAX_MOUSE_DELTA_Y;
+				// }
+				
+				// else if( YawValY < MIN_MOUSE_DELTA_Y ) 
+				// {
+					// YawValY = MIN_MOUSE_DELTA_Y;
+				// }
+			// }
+			
+			//keep camera behind Harry -AdamJD
+			// DesiredRotation.Yaw = cam.rotation.Yaw & 0xFFFF;
+			// SetRotation( DesiredRotation ); 
+		}
+		
 		else
-			YawVal=24.0 * DeltaTime * aTurn;
+		{
+			//YawVal=24.0 * DeltaTime * aTurn; //old retail code -AdamJD
+			
+			//HOLY CRAP- I finally fixed Harry turning when strafing!!! -AdamJD
+			YawVal= (SmoothMouseX / 1.8) * DeltaTime; 
+			// YawValY = (SmoothMouseY / 1.8) * DeltaTime;
+			
+			//for a more smoother Mouse X effect -AdamJD
+			if(YawVal == SmoothMouseX)
+			{
+				if( YawVal > MAX_MOUSE_DELTA_X )		
+				{
+					YawVal = MAX_MOUSE_DELTA_X;
+				}
+				
+				else if( YawVal < MIN_MOUSE_DELTA_X ) 
+				{
+					YawVal = MIN_MOUSE_DELTA_X;
+				}
+			}
+			
+			//for a more smoother Mouse Y effect -AdamJD
+			// if(YawValY == SmoothMouseY)
+			// {
+				// if( YawValY > MAX_MOUSE_DELTA_Y )		
+				// {
+					// YawValY = MAX_MOUSE_DELTA_Y;
+				// }
+				
+				// else if( YawValY < MIN_MOUSE_DELTA_Y ) 
+				// {
+					// YawValY = MIN_MOUSE_DELTA_Y;
+				// }
+			// }
+			
+			//keep camera behind Harry -AdamJD
+			// DesiredRotation.Yaw = cam.rotation.Yaw & 0xFFFF;
+			// SetRotation( DesiredRotation ); 
+		}
 	}
-
+	
 	//If bConstrainYaw is set and you're not turning, this tries to turn you back towards the x axis
 	if( bConstrainYaw  &&  yawVal == 0 )
 	{
@@ -2308,8 +3131,10 @@ function UpdateRotation(float DeltaTime, float maxPitch)
 		else
 			yawVal =  min(  RotDist, 65536 - ViewRotation.Yaw );
 	}
-
+	
+	//AdamJD
 	ViewRotation.Yaw += yawVal;
+	//ViewRotation.Pitch = YawValY;
 
 	//This is specially for keeping harry pointing down a specified yaw, with a certain amount of variance.  For now, it's hard coded down the x axis.
 	if( bConstrainYaw )
@@ -2322,13 +3147,13 @@ function UpdateRotation(float DeltaTime, float maxPitch)
 		if( ViewRotation.Yaw >= 32767  &&  ViewRotation.Yaw < 65536 - ConstrainYawVariance )
 			ViewRotation.Yaw = 65536 - ConstrainYawVariance;
 	}
-
+	
 	// Remember pre-shake.
 	newRotation = ViewRotation;
 	ViewShake(deltaTime);
 	if( ViewTarget != none )
 	{
-		// Apply the view shake delta to our camera actor.
+		//Apply the view shake delta to our camera actor.
 		newRotation = ViewTarget.Rotation + ViewRotation - newRotation;
 		newRotation.Roll = newRotation.Roll & 0xffff;
 		ViewTarget.SetRotation(newRotation);
@@ -2337,17 +3162,76 @@ function UpdateRotation(float DeltaTime, float maxPitch)
 	newRotation = Rotation;
 	newRotation.Yaw = ViewRotation.Yaw;
 	newRotation.Pitch = ViewRotation.Pitch;
-
-	If ( (newRotation.Pitch > maxPitch * RotationRate.Pitch) && (newRotation.Pitch < 65536 - maxPitch * RotationRate.Pitch) )
+	
+	if ( (newRotation.Pitch > maxPitch * RotationRate.Pitch) && (newRotation.Pitch < 65536 - maxPitch * RotationRate.Pitch) )
 	{
-		If (ViewRotation.Pitch < 32768) 
+		if (ViewRotation.Pitch < 32768) 
 			newRotation.Pitch = maxPitch * RotationRate.Pitch;
 		else
 			newRotation.Pitch = 65536 - maxPitch * RotationRate.Pitch;
 	}
 	setRotation(newRotation);
-}
-
+}*/
+//**********************************************************************************************
+//old x mouse function created by me -AdamJD
+/*
+function MouseX(float DeltaTime)
+{
+	local float xMouse;
+	local float fRotSpeed;
+	local float fCurrentMinPitch;
+	local float fCurrentMaxPitch;
+	
+	xMouse = SmoothMouseX * DeltaTime;
+	
+	fRotSpeed = 4.0f;
+	fCurrentMinPitch = -14000.0f;	
+	fCurrentMaxPitch = 14000.0f;
+			
+	//for a more smoother effect -AdamJD
+	if( xMouse > MAX_MOUSE_DELTA_X )
+	{
+		xMouse = MAX_MOUSE_DELTA_X;
+	}
+		
+	else if( xMouse < MIN_MOUSE_DELTA_X ) 
+	{
+		xMouse = MIN_MOUSE_DELTA_X;
+	}
+		
+	//DesiredRotation.Yaw = cam.rotation.Yaw & 0xFFFF;
+	// SetRotation( DesiredRotation );
+}*/
+//**********************************************************************************************
+//old y mouse function created by me -AdamJD
+/*
+function MouseY(float DeltaTime)
+{
+	local float yMouse;
+	local float fRotSpeed;
+	local float fCurrentMinPitch;
+	local float fCurrentMaxPitch;
+			
+	yMouse = SmoothMouseY * DeltaTime;
+	
+	fRotSpeed = 4.0f;
+	fCurrentMinPitch = -14000.0f;	
+	fCurrentMaxPitch = 14000.0f;
+			
+	//for a more smoother effect -AdamJD
+	if( yMouse > MAX_MOUSE_DELTA_X )
+	{
+		yMouse = MAX_MOUSE_DELTA_X;
+	}
+		
+	else if( yMouse < MIN_MOUSE_DELTA_X ) 
+	{
+		yMouse = MIN_MOUSE_DELTA_X;
+	}
+		
+	//DesiredRotation.Yaw = cam.rotation.Yaw & 0xFFFF;
+	// SetRotation( DesiredRotation );
+}*/
 //**********************************************************************************************
 function UpdateRotationToTarget()
 {
@@ -2378,8 +3262,9 @@ function UpdateRotationToTarget()
 
 		//This makes it so when harry goes to state 'hit', he still looks at the boss.
 		DesiredRotation = ViewRotation;
-
-		if(   (StandardTarget.Location != TargetLoc && astrafe != 0)
+		
+		//not needed -AdamJD
+		/*if(   (StandardTarget.Location != TargetLoc && astrafe != 0)
 			|| (BossRailMove(BossTarget) != none)
 		  )
 		{
@@ -2391,13 +3276,16 @@ function UpdateRotationToTarget()
 				v = TargetLoc;
 			}
 			StandardTarget.SetLocation(v);
-		}
+		}*/
 
 		r = rotator(StandardTarget.Location - Location);
 		r.pitch = Rotation.pitch;
-		SetRotation( r );
+		//SetRotation( r ); //not needed -AdamJD
 		ViewRotation = r;
+		DesiredRotation = r; //set the desired rotation -AdamJD
 	}
+	//not needed -AdamJD
+	/*
 	else
 	{
 		TargetLoc = rectarget.location;
@@ -2407,6 +3295,7 @@ function UpdateRotationToTarget()
 		SetRotation( r );
 		ViewRotation = r;
 	}
+	*/
 }
 
 //**********************************************************************************************
@@ -2425,7 +3314,7 @@ function vector ProcessAccel()
 		fLargestAForward = aForward;
 
 	//Point harry at our foe
-	UpdateRotationToTarget();
+	UpdateRotationToTarget(); 
 
 	GetAxes(Rotation,X,Y,Z);
 
@@ -2669,12 +3558,6 @@ ignores SeePlayer, HearNoise, Bump;
 			return;
 		}
 
-		if ( bPressedJump )
-		{
-			DoJump();			// jumping
-			bPressedJump = false;
-		}
-
 		if ( (Physics == PHYS_Walking)  )
 		{
 			if (!bIsCrouching)
@@ -2770,11 +3653,11 @@ ignores SeePlayer, HearNoise, Bump;
 		if ( (Physics == PHYS_Walking) )
 		{
 			Speed2D = Sqrt(Velocity.X * Velocity.X + Velocity.Y * Velocity.Y);
-		}	
+		}
 
 		// Update rotation.
-		OldRotation = Rotation;
-		UpdateRotation(DeltaTime, 1);
+		//OldRotation = Rotation; //not needed -AdamJD
+		//UpdateRotation(DeltaTime, 1); //not needed -AdamJD
 
 
 		ProcessMove(DeltaTime, NewAccel, DodgeMove, OldRotation - Rotation);
@@ -2846,8 +3729,8 @@ function rotator AdjustAim(float projSpeed, vector projStart, int aimerror, bool
 	fireDir = normal(fireDir);
 	bestTarget = none;
 
-	if (rectarget.victim == none)
-	{
+	//if (rectarget.victim == none) //not needed -AdamJD
+	//{
 		foreach VisibleActors( class 'ACTOR', hitactor)
 		{
 			if( HitActor.bprojtarget && PlayerPawn(HitActor) != Self && !HitActor.IsA('BaseCam'))
@@ -2878,7 +3761,9 @@ function rotator AdjustAim(float projSpeed, vector projStart, int aimerror, bool
 			}
 			
 		}
-	}
+	//}
+	//not needed -AdamJD
+	/*
 	else
 	{
 		bestTarget = rectarget.victim;
@@ -2888,6 +3773,7 @@ function rotator AdjustAim(float projSpeed, vector projStart, int aimerror, bool
 		bestYaw = bestYaw & 0xffff;
 		bestZ = objectdir.z;
 	}
+	*/
 
 	if(bestTarget != none)
 	{
@@ -2904,68 +3790,6 @@ function rotator AdjustAim(float projSpeed, vector projStart, int aimerror, bool
 	defaultAngle = rotator(fireDir);
 
 	return defaultAngle;
-}
-
-
-event PreBeginPlay()
-{
-	Super.PreBeginPlay();
-		
-	foreach AllActors(class'baseNarrator', theNarrator)
-		break;
-	if(theNarrator==None)
-		{
-		theNarrator=spawn(class 'Narrator');
-		Log("Narrator spawned:" $theNarrator);
-		}		
-
-}
-
-function PostBeginPlay()
-{
-    local Pawn p;
-	local weapon weap;
-	Super.PostBeginPlay();
-
-	b3DSound = bool(ConsoleCommand("get ini:Engine.Engine.AudioDevice Use3dHardware"));
-
-	bShowMenu=false;
-	log("weapon is" $weapon);
-	if(inventory==none)
-	{
-		weap=spawn(class'baseWand');
-		weap.BecomeItem();
-		AddInventory(weap);
-		weap.WeaponSet(self);
-		weap.GiveAmmo(self);
-		baseWand(weap).bUseMana=false;
-		log(self$ " spawning weap " $weap);
-	}
-	else
-	{
-		log("not spawning weap");
-	}
-
-	iFireSeedCount = 0;
-
-	HUDType=class'HPMenu.HPHud';
-
-	viewClass(class 'BaseCam', true);
-  	// @PAB added new camera target
-  	makeCamTarget();	
-
-	// Harry gets a shadow, bigger than normal.
-	Shadow = Spawn(ShadowClass,self);
-	log( self$ " ShadowClass=" $ShadowClass$ " shadow=" $Shadow$ " tex=" $Shadow.Texture );
-
-// @PAB temp give a spell to Harry
-	baseWand(weap).addSpell(Class'spellDud');
-//	baseWand(weap).addSpell(Class'spellflip');
-//	baseWand(weap).addSpell(Class'spellALOho');
-//	baseWand(weap).SelectSpell(Class'spellFlip');
-
-	HarryAnimChannel = cHarryAnimChannel( CreateAnimChannel(class'cHarryAnimChannel', AT_Replace, 'harry spine1') );
-	HarryAnimChannel.SetOwner( self );
 }
 
 function timer()
@@ -3037,14 +3861,17 @@ function makeTarget()
 	local vector tloc;
 	local vector targetoffset;
 
-	targetOffset.y=0;
 	targetOffset.x=50;
+	targetOffset.y=0;
 	targetOffset.z=0;
 
 	tloc=targetOffset>>viewrotation;
-	tloc=tloc+location;
-
+	tloc +=location;
+	
 	rectarget=spawn(class'target',,,tloc);
+	
+	//not needed -AdamJD
+	/*
 	if(rectarget==none)
 	{
 		targetOffset.y=0;
@@ -3052,11 +3879,12 @@ function makeTarget()
 		targetOffset.z=0;
 
 		tloc=targetOffset>>viewrotation;
-		tloc=tloc+location;
+		tloc +=location;
 
 		rectarget=spawn(class'target',,,tloc);
 	}
-
+	*/
+	
 	if(rectarget==none)
 	{
 		gotostate('playerwalking');
@@ -3064,32 +3892,35 @@ function makeTarget()
 		hpconsole(player.console).bspaceReleased=true;
 		hpconsole(player.console).bSpacePressed=false;
 	}
-
-	rectarget.p=self;
-	rectarget.targetOffset.y=0;
-	rectarget.targetOffset.x=100;
-	rectarget.targetOffset.z=0;
+	
+	else
+	{
+		// rectarget.p=self;
+		rectarget.targetOffset.x=100;
+		rectarget.targetOffset.y=0;
+		rectarget.targetOffset.z=0;
+	}
 }
 
-
+//now not needed -AdamJD
+/*
 // @PAB added new camera target
 function makeCamTarget()
 {
 	local vector tloc;
 	local vector targetoffset;
 
-
-	targetOffset.y=0;
-	targetOffset.x=50;
-	targetOffset.z=0;
-
-
-
-
-	tloc=targetOffset>>viewrotation;
-	tloc=tloc+location;
+	//not needed -AdamJD
+	// targetOffset.y=0; 
+	// targetOffset.x=50; 
+	// targetOffset.z=0; 
 	
-	StandardTarget=spawn(class'camtarget',,,tloc);
+	StandardTarget=spawn(class'camtarget',,,tloc);*/
+	// tloc=targetOffset>>viewrotation; //not needed -AdamJD
+	// tloc+=location; //not needed -AdamJD
+	
+	//not needed -AdamJD
+	/*
 	if(StandardTarget==none)
 	{
 		targetOffset.y=0;
@@ -3107,13 +3938,17 @@ function makeCamTarget()
 		hpconsole(player.console).bspaceReleased = true;
 		hpconsole(player.console).bSpacePressed = false;
 	}
-
-	StandardTarget.p=self;
-	StandardTarget.targetOffset.y=0;
-	StandardTarget.targetOffset.x=100;
-	StandardTarget.targetOffset.z=0;
-	StandardTarget.gotostate('seeking');
-}
+	*/
+	
+	/*
+	 StandardTarget.p=self; 
+	// StandardTarget.targetOffset.y=0; /not needed -AdamJD
+	// StandardTarget.targetOffset.x=100; /not needed -AdamJD
+	 StandardTarget.targetOffset.x= SmoothMouseX; //AdamJD
+	 StandardTarget.targetOffset.y= SmoothMouseY; //AdamJD
+	 StandardTarget.targetOffset.z=0;
+	//StandardTarget.gotostate('seeking'); /not needed -AdamJD
+}*/
 
 state SpellLearning
 {
@@ -3121,57 +3956,8 @@ state SpellLearning
 	ignores ProcessMove, AltFire;
 }
 
-//NEW STUFF FROM TED
-function ClientRestart()
+defaultproperties
 {
-	local Rotator tempRot;
-	if (!bsaved)
-	{
-		Super(Pawn).ClientReStart();
-		
-	} else
-	{
-		//log("client restart");
-		//Velocity = vect(0,0,0);
-		//Acceleration = vect(0,0,0);
-		BaseEyeHeight = Default.BaseEyeHeight;
-		EyeHeight = BaseEyeHeight;
-		//PlayWaiting();
-
-		if ( Region.Zone.bWaterZone && (PlayerRestartState == 'PlayerWalking') )
-		{
-			if (HeadRegion.Zone.bWaterZone)
-					PainTime = UnderWaterTime;
-			setPhysics(PHYS_Swimming);
-			GotoState('PlayerSwimming');
-		}
-		else
-		{
-			//	GotoState(PlayerReStartState);
-			if (Physics != savePhys)
-			{
-				SetPhysics(sd.phys);
-			}
-		}
-		
-		tempRot.Pitch = Rotation.Pitch;
-		tempRot.Yaw = Rotation.Yaw;
-		tempRot.Roll = sd.roll;
-		
-		SetRotation(tempRot);
-	}
-}
-
-exec function ssave(string slot)
-{
-	bsaved = True;
-	sd.phys = Physics;
-	sd.roll = Rotation.roll;
-	ConsoleCommand("savegame" @ slot);
-	bsaved = False;
-}
-
-defaultproperties{
 	ShadowClass=Class'HarryPotter.HarryShadow'
     eaid(0)="xEU-0000004821-SD-001753aabac325f07cb3fa231144fe2e33ae4783feead2b8a73ff021fac326df0ef9753ab9cdf6573ddff0312fab0b0ff39779eaff312x"
     HurtSound(0)=Sound'HPSounds.Har_Emotes.ouch1'
@@ -3204,5 +3990,5 @@ defaultproperties{
     CollisionHeight=42
     Mass=1
     Buoyancy=118.8
-	bsaved=False
+	RotationRate=(Pitch=20000,Yaw=70000,Roll=3072) 	//added the rotation rate in the default props -AdamJD
 }
