@@ -1,0 +1,27 @@
+//===============================================================================
+//  [HogBookStack] 
+//===============================================================================
+
+class HogBookStack extends HProps;
+#exec MESH  MODELIMPORT MESH=HogBookStackMesh MODELFILE=models\HogBookStackMesh.PSK LODSTYLE=10
+#exec MESH  ORIGIN MESH=HogBookStackMesh X=0 Y=0 Z=0 YAW=0 PITCH=0 ROLL=0
+#exec ANIM  IMPORT ANIM=HogBookStackAnims ANIMFILE=models\HogBookStackAnims.PSA COMPRESS=1 MAXKEYS=999999 IMPORTSEQS=1
+#exec MESHMAP   SCALE MESHMAP=HogBookStackMesh X=1.0 Y=1.0 Z=1.0
+#exec MESH  DEFAULTANIM MESH=HogBookStackMesh ANIM=HogBookStackAnims
+
+// Digest and compress the animation data. Must come after the sequence declarations.
+// 'VERBOSE' gives more debugging info in UCC.log 
+#exec ANIM DIGEST  ANIM=HogBookStackAnims VERBOSE
+
+#EXEC TEXTURE IMPORT NAME=HogBookStackTex0  FILE=TEXTURES\HogBookStackTex0.bmp  GROUP=Skins
+
+#EXEC MESHMAP SETTEXTURE MESHMAP=HogBookStackMesh NUM=0 TEXTURE=HogBookStackTex0
+
+// Original material [0] is [Material #7] SkinIndex: 0 Bitmap: BookStack_128.bmp  Path: D:\Harry Potter\A Lorian's Stuff\Hogwarts\General Objects
+
+defaultproperties
+{
+     bStatic=False
+     DrawType=DT_Mesh
+     Mesh=SkeletalMesh'HProps.HogBookStackMesh'
+}

@@ -1,0 +1,178 @@
+==================================================================
+Harry Potter à l'école des sorciers (TM) Version 1.0
+Fichier LisezMoi
+17 octobre 2001
+==================================================================
+
+Ce fichier LisezMoi contient des informations de dernière minute 
+qui n'ont pas pu être incluses dans le manuel.
+
+
+==================================================================
+Recommandations matérielles
+==================================================================
+
+Configuration minimum nécessaire :
+
+	Processeur Pentium II de 266 MHz
+	32 Mo de mémoire RAM
+	Carte vidéo de 4 Mo
+	500 Mo d'espace disponible sur le disque dur
+
+Pour une performance optimale :
+
+	Processeur de 400 MHz ou plus rapide
+	64 Mo de mémoire RAM
+	Carte accélératrice vidéo 3D de 16 Mo compatible DirectX
+	500 Mo d'espace disponible sur le disque dur
+
+Systèmes d'exploitation nécessaires :
+
+	Windows 95, Windows 98, Windows ME, Windows 2000
+	ou Windows XP
+
+	Notez que Windows NT 3.x et 4.0 ne sont pas compatibles.
+
+Les cartes accélératrices 3D de 16 Mo suivantes ne sont pas 
+totalement compatibles et ne fonctionnent pas correctement avec le 
+jeu :
+
+Cartes 3Dfx Voodoo Banshee (exemples ci-après) :
+	Diamond Monster Fusion (TM)
+	Metabyte Wicked 3D
+	Quantum 3D Raven
+
+Cartes PowerVR NEON 250 :
+	Video Logic PowerVR Neon 250
+
+Cartes S3 Savage 4 :
+	Diamond Stealth III S540
+	Diamond Stealth III S540 Extreme
+
+Cartes SiS 300
+
+Cartes Rendition Verité 2200
+
+==================================================================
+Espace disque
+==================================================================
+
+Une fois le jeu installé, Windows nécessite de l'espace
+supplémentaire pour son système d'exploitation (mémoire virtuelle). 
+L'espace nécessaire varie entre 100 Mo et 250 Mo. Si vous
+avez moins de 250 Mo d'espace disponible sur le disque, il se peut 
+que le message d'erreur suivant s'affiche :
+
+	"Mémoire virtuelle épuisée"
+
+Dans ce cas, libérez de l'espace sur le disque dur.
+
+
+==================================================================
+Installation de DirectX 8.0
+==================================================================
+
+Si vous n'avez pas installé DirectX 8.0 lors de l'installation 
+initiale de Harry Potter à l'école des sorciers, vous pouvez le 
+faire plus tard en lançant "dxsetup.exe" à partir du dossier 
+"DirectX" situé sur le disque.
+
+
+==================================================================
+Dépannage
+==================================================================
+
+DirectX 8.0
+
+Il est fortement conseillé d'installer DirectX 8.0 à partir du
+disque d'installation de Harry Potter à l'école des sorciers 
+puisque DirectX 8.0 résout certains problèmes graphiques
+et de cartes vidéo.
+
+Pilotes de cartes vidéo
+
+Certains pilotes de cartes vidéo ne sont pas totalement compatibles
+avec Direct3D. Voici quelques-uns des problèmes pouvant survenir 
+avec ces pilotes :
+
+	- Panne au démarrage
+	- Panne lors de la modification de la résolution vidéo
+	- Textures endommagées
+	- Lumières clignotant de façon intempestive à l'écran
+	- Performances exceptionnellement basses.
+
+Pour remédier à cela, nous vous conseillons d'aller sur le site 
+Internet du fabricant de votre carte vidéo et téléchargez les mises
+à jour des pilotes de votre carte. Il est fortement conseillé, si 
+vous avez le choix, de télécharger et d'installer des pilotes 
+certifiés Microsoft (WHQL).
+
+
+==================================================================
+Amélioration des performances
+==================================================================
+
+Sur certains ordinateurs, les performances peuvent augmenter si 
+les options son/vidéo sont correctement paramétrées dans la partie
+"Vidéo" du menu "Options" :
+
+	- Essayez de baisser le rendu des détails et des textures.
+	Ceci est particulièrement pratique pour les ordinateurs 
+	disposant de moins de 128 Mo de mémoire RAM.
+
+	- Si votre résolution vidéo est supérieure à 640x480, 
+	essayez	de la régler sur 640x480.
+
+	- Si l'affichage des couleurs est en 32 bits, essayez de 
+	passer en 16 bits.
+
+
+==================================================================
+Autres problèmes
+==================================================================
+
+Son :
+
+Les glissières de volume de la musique et du son se trouvent dans 
+la partie "Audio" du menu "Options". Elles vous permettent de régler
+le volume dans le jeu.
+
+Commandes au clavier :
+
+Certains claviers de PC ne reconnaissent pas la combinaison de 3 
+touches ou plus utilisées simultanément.
+Pour résoudre ce problème vous pouvez redéfinir l'attribution des 
+touches à partir du Menu "Options". Si vous décidez de modifier les
+commandes de la configuration par défaut, certains messages du 
+didacticiel feront référence aux touches définies initialement par
+défaut plutôt qu'aux nouvelles.
+
+
+==================================================================
+Sites Internet utiles
+==================================================================
+
+http://www.eagames.com
+Visitez le site d'Electronic Arts afin de connaître nos autres 
+produits.
+
+http://techsupport.ea.com
+Le site de l'assistance technique d'Electronic Arts comporte des 
+informations très utiles.
+
+http://windowsupdate.microsoft.com
+Veillez à mettre à jour votre installation Windows.
+
+
+==================================================================
+Remarques
+==================================================================
+
+(c) 2001 Electronic Arts Inc. Tous droits réservés.
+
+HARRY POTTER, characters, names and related indicia are trademarks 
+of and (c) Warner Bros.
+ (s01)
+
+Toutes les autres marques appartiennent à leur propriétaire 
+respectif.

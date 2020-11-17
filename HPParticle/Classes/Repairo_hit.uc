@@ -1,0 +1,32 @@
+//=============================================================================
+//=============================================================================
+class repairo_hit expands ParticleFX;
+
+defaultproperties
+{
+     ParticlesPerSec=(Base=80,Rand=5)
+     SourceWidth=(Base=30)
+     SourceHeight=(Base=30)
+     AngularSpreadWidth=(Base=10,Rand=2)
+     AngularSpreadHeight=(Base=10)
+     Lifetime=(Base=3)
+     ColorEnd=(Base=(R=30,G=30,B=30))
+     SizeWidth=(Base=12)
+     SizeLength=(Base=12)
+     SizeEndScale=(Base=5)
+     SpinRate=(Base=-6,Rand=6)
+     DripTime=(Base=0.2)
+     Attraction=(X=20,Y=20)
+     Damping=1.5
+     ParticlesMax=80
+     Textures(0)=Texture'HPParticle.hp_fx.Particles.Sparkle_3'
+     LastUpdateLocation=(X=-388.1138,Y=-1.974696,Z=16.39722)
+     LastEmitLocation=(X=-388.1138,Y=-1.974696,Z=16.39722)
+     LastUpdateRotation=(Pitch=16208,Yaw=-16336)
+     EmissionResidue=0.003456
+     Age=1839.099
+     Tag=ParticleFX
+     Location=(X=-388.1138,Y=-1.974696,Z=16.39722)
+     Rotation=(Pitch=16208,Yaw=-16336)
+     OldLocation=(X=32.09471,Y=293.3341,Z=16.9378)
+}

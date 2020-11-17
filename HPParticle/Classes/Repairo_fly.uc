@@ -1,0 +1,34 @@
+//=============================================================================
+//=============================================================================
+class repairo_fly expands ParticleFX;
+
+defaultproperties
+{
+     ParticlesPerSec=(Base=200)
+     SourceWidth=(Base=3)
+     SourceHeight=(Base=3)
+     AngularSpreadWidth=(Base=45,Rand=10)
+     AngularSpreadHeight=(Base=45,Rand=10)
+     bSteadyState=True
+     Speed=(Base=20)
+     Lifetime=(Base=0.75)
+     ColorStart=(Base=(R=128,B=128))
+     ColorEnd=(Base=(R=128,G=128,B=128))
+     SizeWidth=(Rand=2)
+     SizeLength=(Rand=2)
+     SizeEndScale=(Base=0.25)
+     SpinRate=(Base=-3,Rand=3)
+     SizeDelay=0.25
+     Damping=5
+     Gravity=(Z=-500)
+     Textures(0)=Texture'HPParticle.hp_fx.Particles.Sparkle_3'
+     LastUpdateLocation=(X=-383.86,Y=-178.5758,Z=65.73093)
+     LastEmitLocation=(X=-383.86,Y=-178.5758,Z=65.73093)
+     LastUpdateRotation=(Pitch=16144,Yaw=-16336)
+     EmissionResidue=0.810257
+     Age=13676.87
+     Tag=ParticleFX
+     Location=(X=-383.86,Y=-178.5758,Z=65.73093)
+     Rotation=(Pitch=16144,Yaw=-16336)
+     OldLocation=(X=1.133467,Y=115.5254,Z=68.5724)
+}

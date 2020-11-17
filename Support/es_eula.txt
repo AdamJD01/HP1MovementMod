@@ -1,0 +1,31 @@
+ CONTRATO DE LICENCIA PARA EL USUARIO FINAL DE SOFTWARE MICROSOFT
+
+
+IMPORTANTE - LEA DETENIDAMENTE: Este Contrato de Licencia para el Usuario Final Microsoft ("CLUF") constituye un acuerdo legal entre usted (ya sea una persona física o una entidad moral) y Microsoft Corporation respecto al producto de software Microsoft indicado arriba, el que incluye software y documentación "en línea" o electrónica y puede incluir medios relacionados y materiales impresos (si existen) (PRODUCTO SOFTWARE o SOFTWARE). Al instalar, copiar o de otra manera usar el PRODUCTO SOFTWARE, usted acepta quedar obligado por los términos del presente CLUF. Si no está de acuerdo con los términos de este Contrato no estará autorizado a usar el PRODUCTO SOFTWARE.
+
+El PRODUCTO SOFTWARE se encuentra protegido por leyes de derechos de autor y por tratados internacionales en materia de derechos de autor, así como por otras leyes y tratados sobre la propiedad intelectual. El PRODUCTO SOFTWARE se concede bajo licencia, no se vende.
+
+1. CONCESIÓN DE LICENCIA. Este CLUF le otorga los siguientes derechos:
+Uso y copia. Microsoft le concede el derecho de usar copias del PRODUCTO SOFTWARE sólo junto con una copia válida con licencia de los productos de sistemas operativos Microsoft (por ejamplo, Windows(r) 95). Podrá hacer copias del PRODUCTO SOFTWARE para usarlas en todos los equipos o PCs en los que tiene productos de sistemas operativos Microsoft con licencia. También podrá hacer copias del PRODUCTO SOFTWARE a los fines de copia de seguridad (o copia de respaldo) y archivo.
+
+2. RESTRICCIONES.
+* Deberá mantener todas las notificaciones de derechos de autor en todas las copias del PRODUCTO SOFTWARE.
+* No podrá distribuir copias del PRODUCTO SOFTWARE a terceros. 
+* No podrá utilizar técnicas de ingeniería inversa, descompilar ni desensamblar el PRODUCTO SOFTWARE, excepto y únicamente que dicha actividad esté expresamente permitida por la ley aplicable, no obstante esta prohibición.
+* No podrá alquilar o arrendar el PRODUCTO SOFTWARE. 
+* Podrá transferir de manera permanente la totalidad de sus derechos previstos en este CLUF sólo junto con la transferencia permanente de su copia o copias de los productos de sistemas operativos con licencia válida.
+
+3. TERMINACIÓN. Los derechos adquiridos a través de este CLUF se dan por terminados con la terminación de su CLUF para sistemas operativos Microsoft o, sin perjuicio de cualquier otro derecho, Microsoft podrá terminar este CLUF en caso de que usted no cumpla con los términos y condiciones del mismo. En dicho caso, deberá destruir todas las copias del PRODUCTO SOFTWARE.
+
+4. DERECHOS DE AUTOR. La titularidad y derechos de autor correspondientes al PRODUCTO SOFTWARE y todas las copias de éste son propiedad de Microsoft o sus proveedores.
+
+5. RESTRICCIONES EN MATERIA DE EXPORTACIÓN. No podrá exportar o re exportar el PRODUCTO SOFTWARE a ningún país, persona, entidad o usuario final sujeto a las restricciones de exportación de los Estados Unidos de América. Los países actualmente incluidos bajo estas restricciones son, pero no se limitan a, Cuba, Irán, Irak, Libia, Corea del Norte, Siria y la República Federal de Yugoslavia (Serbia y Montenegro, las Áreas Protegidas por las Naciones Unidas y las áreas de la República de Bosnia y Herzegovina bajo el control de las fuerzas Serbias en Bosnia). Deberá garantizar y manifestar que ni la Dirección de Administración de Exportaciones (Bureau of Export Administration) de los Estados Unidos de América ni ninguna otra agencia federal ha suspendido, revocado o negado sus privilegios de exportación.
+
+
+6. AUSENCIA DE GARANTÍAS. TODO USO QUE SE HAGA DEL PRODUCTO SOFTWARE SERÁ BAJO SU PROPIO RIESGO. EL PRODUCTO SOFTWARE SE PROPORCIONA PARA SER USADO SOLAMENTE CON PRODUCTOS DE SISTEMAS OPERATIVOS MICROSOFT. HASTA LA MÁXIMA EXTENSIÓN PERMITIDA POR LA LEY APLICABLE, TANTO MICROSOFT COMO SUS PROVEEDORES DESCONOCEN TODAS LAS GARANTÍAS Y CONDICIONES, TANTO EXPRESAS COMO IMPLÍCITAS, INCLUYENDO, SIN LIMITACIÓN, LAS GARANTÍAS IMPLÍCITAS DE COMERCIALIZACIÓN, ADECUACIÓN A UN FIN PARTICULAR Y NO INFRACCIÓN.
+
+7. AUSENCIA DE RESPONSABILIDAD POR DAÑOS CONSECUENCIALES. HASTA LA MÁXIMA EXTENSIÓN PERMITIDA POR LA LEY APLICABLE, MICROSOFT NI SUS PROVEEDORES EN NINGÚN CASO SERÁN RESPONSABLES POR NINGÚN DAÑO ESPECIAL, INCIDENTAL, INDIRECTO O CONSECUENCIAL (INCLUYENDO, SIN LIMITACIÓN, DAÑOS POR PÉRDIDAS EN LAS GANANCIAS, LUCRO CESANTE, PÉRDIDA DE INFORMACIÓN COMERCIAL O CUALQUIER OTRA PÉRDIDA PECUNIARIA) QUE SE DERIVE DEL USO O LA INCAPACIDAD DE USAR EL PRODUCTO SOFTWARE, AUN CUANDO MICROSOFT HUBIERA SIDO ADVERTIDA DE LA POSIBILIDAD DE TALES DAÑOS. DEBIDO A QUE ALGUNOS ESTADOS Y JURISDICCIONES NO PERMITEN LA EXCLUSIÓN O LIMITACIÓN DE RESPONSABILIDAD POR DAÑOS CONSECUENCIALES O INCIDENTALES, LA ANTERIOR LIMITACIÓN PUEDE NO APLICARLE.
+
+
+8. OTROS. Este CLUF está regido por las leyes del Estado de Washington, Estados Unidos de América.
+

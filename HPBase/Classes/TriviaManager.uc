@@ -1,0 +1,1 @@
+class TriviaManager extends GameReferee;

@@ -1,0 +1,39 @@
+//=============================================================================
+// Crabfire.
+//=============================================================================
+class Crabfire expands ParticleFX;
+
+defaultproperties
+{
+     ParticlesPerSec=(Base=80,Rand=40)
+     SourceWidth=(Base=0,Rand=15)
+     SourceHeight=(Base=0,Rand=15)
+     SourceDepth=(Rand=15)
+     AngularSpreadWidth=(Base=180,Rand=180)
+     AngularSpreadHeight=(Base=180,Rand=180)
+     Speed=(Base=25)
+     Lifetime=(Rand=1)
+     ColorStart=(Base=(B=0),Rand=(R=128,G=128,B=128))
+     SizeWidth=(Base=1,Rand=1)
+     SizeLength=(Base=1,Rand=1)
+     SizeEndScale=(Base=50)
+     SpinRate=(Base=-6,Rand=12)
+     AlphaGrowPeriod=-0.3
+     Chaos=10
+     Damping=5
+     WindModifier=25
+     GravityModifier=-0.15
+     Textures(0)=Texture'HPParticle.hp_fx.Spells.Les_fire_01'
+     LastUpdateLocation=(X=-2.980232e-007,Z=-24.66475)
+     LastEmitLocation=(X=-2.980232e-007,Z=-24.66475)
+     LastUpdateRotation=(Pitch=16368)
+     EmissionResidue=0.9668274
+     Age=2357.851
+     ParticlesEmitted=196314
+     bDynamicLight=True
+     Tag=Dummyparticle
+     Location=(X=-2.980232e-007,Z=-24.66475)
+     Rotation=(Pitch=16368)
+     OldLocation=(Z=32)
+     bSelected=True
+}

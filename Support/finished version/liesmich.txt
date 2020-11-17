@@ -1,0 +1,173 @@
+==================================================================
+Harry Potter und der Stein der Weisen(TM) Version 1.0
+Readme
+17. Oktober 2001
+==================================================================
+
+Diese Readme-Datei enthält kurzfristig hinzugekommene Informationen, 
+die nicht mehr ins Handbuch aufgenommen werden konnten.
+
+
+==================================================================
+Systemanforderungen
+==================================================================
+
+Benötigt: 
+
+	PII-kompatible CPU mit 266 MHz
+	32 MB RAM
+	Grafikkarte mit 4 MB
+	500 MB Festplattenplatz
+
+Empfohlen:
+
+	CPU mit 400 MHz oder höher
+	64 MB RAM 
+	3D-Beschleuniger mit 16 MB und DirectX-Unterstützung
+	500 MB Festplattenplatz
+
+Empfohlene Betriebssysteme:
+
+	Windows 95, Windows 98, Windows ME oder Windows XP
+
+	Hinweis: Windows NT (3.x, 4.0) wird nicht unterstützt.
+
+Die folgenden 3D-Beschleuniger mit 16 MB werden nicht vollständig 
+unterstützt, was dazu führen kann, dass das Spiel nicht korrekt 
+läuft:
+
+3Dfx Voodoo Banshee-Karten:
+	Diamond Monster Fusion
+	Metabyte Wicked 3D
+	Quantum 3D Raven
+
+PowerVR NEON 250-Karten:
+	Video Logic PowerVR Neon 250
+
+S3 Savage 4-Karten:
+	Diamond Stealth III S540
+	Diamond Stealth III S540 Extreme
+
+SiS 300-Karten
+
+Rendition Verité 2200-Karten
+
+==================================================================
+Festplattenplatz
+==================================================================
+
+Zusätzlich zum für das Spiel benötigten Festplattenplatz wird weiterer
+Speicherplatz (zwischen 100 und 250 MB) für das Betriebssystem 
+(virtueller Speicher) benötigt. Wenn dir weniger als 250 MB freier 
+Festplattenplatz zur Verfügung stehen, erhältst du möglicherweise eine 
+Fehlermeldung, die besagt, dass du nicht über genügend virtuellen 
+Speicher verfügst.
+
+Wenn du diese Fehlermeldung erhältst, solltest du Festplattenplatz 
+freimachen.
+
+
+==================================================================
+Installation von DirectX 8.0
+==================================================================
+
+Wenn du bei der Installation von Harry Potter und der Stein der Weisen
+DirectX 8.0 nicht sofort installiert hast, kannst du dies zu einem
+späteren Zeitpunkt nachholen. Starte dazu im Ordner "DirectX" der
+Spiel-CD die Datei "dxsetup.exe".
+
+
+==================================================================
+Problemlösungen
+==================================================================
+
+DirectX 8.0
+
+Wir empfehlen dir, DirectX 8.0 von der Installationsdatei zu
+Harry Potter und der Stein der Weisen zu installieren, da mit 
+DirectX 8.0 eine Menge Probleme hinsichtlich der Grafikkarte und 
+andere Grafikprobleme gelöst werden können.
+
+Grafikkartentreiber
+
+Einige Grafikkartentreiber werden von Direct3D nicht korrekt 
+unterstützt. Probleme, die mit diesen Treibern auftreten könnten, 
+sind beispielsweise:
+
+	- Absturz beim Neustart
+	- Absturz nach dem Verändern der Grafikauflösung
+	- Beschädigte Texturen
+	- Helle Blitze auf dem Bildschirm
+	- Ungewöhnlich langsame Leistung
+
+Sollte eines dieser Probleme auftreten, besuche einfach die Website
+des Herstellers deiner Grafikkarte und lade dir die aktuellsten
+Treiber für deine Grafikkarte herunter. Wir empfehlen dir dringend,
+von Microsoft zertifizierte Treiber (WHQL) herunterzuladen.
+
+
+==================================================================
+Verbesserung der Spielleistung
+==================================================================
+
+Bei manchen Computern kannst du die Spielleistung verbessern, 
+indem du die Grafik- beziehungsweise Soundoptionen veränderst:
+
+	- Versuche, die Texturendetails im Menü 'Optionen' zu 
+	  verändern. Dies ist besonders bei Computern mit weniger als 
+ 	  128 MB RAM empfehlenswert.
+
+	- Wenn die Grafikauflösung höher als 640 x 480 ist, stelle sie
+	  im Menü 'Optionen' auf 640 x 480 ein.
+
+	- Wenn die Farbtiefe 32 Bit beträgt, versuche, sie im Grafikmenü
+  	  auf 16 Bit herunterzusetzen.
+
+
+==================================================================
+Andere Probleme
+==================================================================
+
+Sound:
+
+Die Regler für die Musik-/Soundlautstärke findest du im Menü 
+'Optionen' unter Soundoptionen. Mithilfe dieser Regler kannst 
+du die Lautstärke wunschgemäß anpassen.
+
+Tastatur:
+
+Bei einigen Tastaturen kann es zu Problemen kommen, wenn du drei oder
+mehrere Tasten gleichzeitig drückst.
+Um dieses Problem zu lösen, kannst du die Tasten im Menü 'Optionen' 
+neu belegen. Solltest du dich dazu entscheiden, die Standardeinstellung 
+zu ändern, musst du dir darüber im Klaren sein, dass sich einige der 
+Informationen des Tutorials auf die Standardeinstellung beziehen und 
+nicht auf die Tastaturbelegung, die du neu festgelegt hast.
+
+
+==================================================================
+Nützliche Websites
+==================================================================
+
+http://www.eagames.com
+Sieh dir alle Produkte von Electronic Arts an.
+
+http://techsupport.ea.com
+Hier erhältst du technische Unterstützung.
+
+http://windowsupdate.microsoft.com
+Lade dir die aktuellsten Windows-Updates herunter.
+
+
+==================================================================
+Rechtliche Hinweise
+==================================================================
+
+(c) 2001 Electronic Arts Inc. Alle Rechte vorbehalten.
+
+HARRY POTTER, characters, names and related indicia are trademarks 
+of and (c) Warner Bros.
+ (s01)
+
+Alle anderen Marken sind Eigentum ihrer jeweiligen Besitzer.
+

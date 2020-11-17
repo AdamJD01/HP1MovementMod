@@ -1,0 +1,27 @@
+//===============================================================================
+//  [FireSeed] 
+//===============================================================================
+
+class FireSeed extends HProps;
+#exec MESH  MODELIMPORT MESH=FireSeedMesh MODELFILE=models\FireSeedMesh.PSK LODSTYLE=10
+#exec MESH  ORIGIN MESH=FireSeedMesh X=0 Y=0 Z=0 YAW=0 PITCH=0 ROLL=0
+#exec ANIM  IMPORT ANIM=FireSeedAnims ANIMFILE=models\FireSeedAnims.PSA COMPRESS=1 MAXKEYS=999999 IMPORTSEQS=1
+#exec MESHMAP   SCALE MESHMAP=FireSeedMesh X=1.0 Y=1.0 Z=1.0
+#exec MESH  DEFAULTANIM MESH=FireSeedMesh ANIM=FireSeedAnims
+
+// Digest and compress the animation data. Must come after the sequence declarations.
+// 'VERBOSE' gives more debugging info in UCC.log 
+#exec ANIM DIGEST  ANIM=FireSeedAnims VERBOSE
+
+#EXEC TEXTURE IMPORT NAME=FireSeedTex0  FILE=TEXTURES\FireSeedTex0.bmp  GROUP=Skins
+
+#EXEC MESHMAP SETTEXTURE MESHMAP=FireSeedMesh NUM=0 TEXTURE=FireSeedTex0
+
+// Original material [0] is [Material #25] SkinIndex: 0 Bitmap: fireseed_128.bmp  Path: D:\Harry Potter\Art\Objects\Fireseed Challenge
+
+defaultproperties
+{
+     bStatic=False
+     DrawType=DT_Mesh
+     Mesh=SkeletalMesh'HPBase.FireSeedMesh'
+}

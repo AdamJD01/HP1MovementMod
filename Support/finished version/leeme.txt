@@ -1,0 +1,199 @@
+==================================================================
+Harry Potter y la Piedra Filosofal(TM) Versión 1.0
+Archivo Léeme
+17 de Octubre de 2001
+==================================================================
+
+Este archivo contiene información de última hora que no se
+encuentra en el manual.
+
+
+==================================================================
+Requerimientos del Sistema
+==================================================================
+
+CONFIGURACIÓN MÍNIMA
+	Windows XP, Windows Me, Windows 2000, Windows 98,
+	o Windows 95  (Windows NT no es soportado)
+	Procesador Intel Pentium II 266 MHz o AMD K6-2
+	64 MB de RAM 
+	Unidad CD-ROM 4x / DVD-ROM
+	500 MB de espacio libre en tu disco duro más espacio libre
+	para guardar tus partidas (también se necesita espacio libre
+	adicional para el archivo de intercambio de datos de Windows
+	y para la instalación de DirectX 8.0)
+	Tarjeta de Vídeo con 8 MB compatible con DirectX 8.0; El
+	Modo Acelerado 3D necesita una Tarjeta de Vídeo con 8MB
+	compatible con Direct3D, con chipsets NVIDIA GeForce3, NVIDIA
+	GeForce2, NVIDIA GeForce 256, NVIDIA Riva TNT2, NVIDIA
+	Riva TNT, 3dfx Voodoo5, ATI Radeon, ATI Rage 128 Pro,
+	ATI Rage 128, Matrox MGA-G550, Matrox MGA-G450,
+	Matrox MGA-G400, Matrox MGA-G200, PowerVR3 Kyro II,
+	PowerVR3 Kyro, o S3 Savage2000 y compatibles con DirectX 8.0.
+	Tarjeta de Sonido compatible con DirectX 8.0
+	Teclado
+	Ratón
+	
+RECOMENDADO
+	Procesador Intel Pentium II 400 MHz o superior o 
+	AMD K6-2 o superior
+	128 MB de RAM o más
+	Unidad CD-ROM 8x o superior / DVD-ROM
+	Tarjeta de Vídeo con 32 MB o más compatible con Direct3D
+
+
+Las siguientes aceleradoras 3D con 16 MB no son soportadas
+completamente y puede que no funcionen correctamente con este
+juego:
+
+Tarjetas 3Dfx Voodoo Banshee(algunos ejemplos a continuación):
+	Diamond Monster Fusion
+	Metabyte Wicked 3D
+	Quantum 3D Raven
+
+Tarjetas PowerVR NEON 250:
+	Video Logic PowerVR Neon 250
+
+Tarjetas S3 Savage 4:
+	Diamond Stealth III S540
+	Diamond Stealth III S540 Extreme
+
+Tarjetas SiS 300
+
+Tarjetas Rendition Verité 2200
+
+==================================================================
+Espacio en Disco Duro
+==================================================================
+
+Además del juego instalado, Windows necesitará espacio libre en el
+disco duro para su sistema operativo (memoria virtual).
+La cantidad de espacio requerido varía de 100 MB a 250 MB. Si
+dispones de menos de 250 MB de espacio libre podrás ver el siguiente
+mensaje en una ventana de error:
+
+	"No hay suficiente memoria virtual"
+
+Si ves este mensaje, deberás liberar espacio en tu disco duro.
+
+
+==================================================================
+Instalando DirectX 8.0
+==================================================================
+
+Si decides no instalar DirectX8.0 en el momento en el que instalas
+Harry Potter y la Piedra Filosofal, puedes hacerlo más tarde
+ejecutando el archivo "dxsetup.exe" que se encuentra en la carpeta
+"DirectX" del CD-ROM.
+
+
+==================================================================
+Solución de Problemas
+==================================================================
+
+DirectX 8.0
+
+Te recomendamos que instales DirectX8.0 desde el CD-ROM de
+instalación de Harry Potter y la Piedra Filosofal, ya que DirectX8.0
+puede resolver problemas con tarjetas gráficos e incluso solventar
+algunos problemas gráficos.
+
+Controladores de Tarjetas de Vídeo
+
+Algunas tarjetas de vídeo no soportan Direct3D correctamente. Los
+problemas más habituales que suelen ocurrir con estos controladores
+son:
+
+	- Bloqueo o reinicio del ordenador
+	- Bloqueo al cambiar la resolución de vídeo
+	- Texturas erróneas
+	- Flashes en pantalla inesperados
+	- Pobre rendimiento
+
+La mejor solución es visitar la web del fabricante de tu tarjeta de
+vídeo y conseguir unos controladores actualizados para tu tarjeta.
+Te recomendamos que, si te dan la opción, te descargues e instales
+controladores certificados por Microsoft (WHQL).
+
+
+==================================================================
+Mejorando el Rendimiento de la Jugabilidad
+==================================================================
+
+Algunas máquinas se beneficiarán al experimentar con las opciones
+de vídeo/audio:
+
+	- Intenta bajar el nivel de detalle de las texturas en el
+	  menú de 'Opciones'. Es muy útil en ordenadores con menos
+	  de 128 MB de RAM.
+
+	- Si la resolución de vídeo es mayor de 640X480, intenta
+	  reducirla a 640X480 en el menú 'Opciones'.
+
+	- Si la profundidad de color es de 32 bits, intenta
+	  reducirla a 16 bits en el menú de vídeo.
+
+
+==================================================================
+Correcciones al Manual
+==================================================================
+
+Contrariamente a lo que el manual dice, no se puede saltar por las
+secciones de la historia usando el icono "Página Siguiente" o la
+BARRA ESPACIADORA.
+
+Si desfalleces durante la Liga de Quidditch tu equipo no será
+penalizado tal y como indica el manual.
+
+Durante las partes del juego en las que controlas la escoba, sólo
+podrás dirigir la dirección de vuelo usando el teclado y no el ratón
+como indica el manual.
+
+
+==================================================================
+Otros Problemas
+==================================================================
+
+Sonido:
+
+Las barras de desplazamiento de Música/Sonido se encuentran en la
+sección 'Audio' del menú 'Opciones'. Las barras de desplazamiento
+te dan la opción de ajustar varios niveles de volumen del juego.
+
+Controles de Teclado:
+
+Algunos teclados de PC no pueden reconocer ciertas combinaciones
+de 3 o más teclas pulsadas al mismo tiempo.
+Para solventar este problema, puedes redefinir las teclas de control
+a través del manú de 'Opciones'. Deberías decidir cambiar los
+controles partiendo de la configuración por defecto aunque debes
+tener en cuenta que algunos de los mensajes que salen en el tutorial
+harán referencia a las teclas por defecto originales en lugar de a
+los cambios que tu has hecho.
+
+
+==================================================================
+Sitio Web Útiles
+==================================================================
+
+http://www.eagames.com
+Visita Electronic Arts y descubre nuestros productos.
+
+http://techsupport.ea.com
+Mucha información y soporte de Electronic Arts.
+
+http://windowsupdate.microsoft.com
+Mantén tu instalación de Windows actualizada.
+
+
+==================================================================
+Avisos
+==================================================================
+
+(c) 2001 Electronic Arts Inc.  Todos los derechos reservados.
+
+HARRY POTTER, characters, names and related indicia are trademarks 
+of and (c) Warner Bros.
+(s01)
+
+Todas las demás marcas son propiedad de sus respectivos propietarios.

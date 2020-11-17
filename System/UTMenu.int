@@ -1,0 +1,7 @@
+[Public]
+Object=(Name=UTMenu.UTConsole,Class=Class,MetaClass=Engine.Console)
+
+[UTConsole]
+ClassCaption=Harry Potter Console
+
+[OnlineServices]

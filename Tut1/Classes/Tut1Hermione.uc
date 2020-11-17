@@ -1,0 +1,8 @@
+class Tut1Hermione extends baseChar;
+
+defaultproperties
+{
+     GroundSpeed=150
+     DrawType=DT_Mesh
+     Mesh=SkeletalMesh'HarryPotter.skhermioneMesh'
+}

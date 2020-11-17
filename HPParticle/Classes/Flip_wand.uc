@@ -1,0 +1,32 @@
+//=============================================================================
+// Flip_wand.
+//=============================================================================
+class Flip_wand expands ParticleFX;
+
+defaultproperties
+{
+     ParticlesPerSec=(Base=200)
+     SourceWidth=(Base=2)
+     SourceHeight=(Base=2)
+     AngularSpreadWidth=(Base=10,Rand=2)
+     AngularSpreadHeight=(Base=10,Rand=2)
+     bSteadyState=True
+     ColorEnd=(Base=(R=30,G=30,B=30))
+     SizeWidth=(Base=3)
+     SizeLength=(Base=3)
+     SizeEndScale=(Base=5)
+     SpinRate=(Base=-3)
+     DripTime=(Base=0.2)
+     Attraction=(X=-50,Z=-50)
+     Damping=1.5
+     Textures(0)=Texture'HPParticle.hp_fx.Particles.Sparkle_3'
+     LastUpdateLocation=(X=-386.9955,Y=-383.679,Z=68.5724)
+     LastEmitLocation=(X=-386.9955,Y=-383.679,Z=68.5724)
+     LastUpdateRotation=(Yaw=-16336)
+     EmissionResidue=0.178528
+     Age=14217.86
+     Tag=ParticleFX
+     Location=(X=-386.9955,Y=-383.679,Z=68.5724)
+     Rotation=(Pitch=0,Yaw=-16336)
+     OldLocation=(X=-32,Y=64,Z=96)
+}

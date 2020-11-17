@@ -1,0 +1,33 @@
+//=============================================================================
+// Flip_react.
+//=============================================================================
+class Flip_react expands ParticleFX;
+
+defaultproperties
+{
+     ParticlesPerSec=(Base=200)
+     SourceWidth=(Base=40)
+     SourceHeight=(Base=5)
+     AngularSpreadWidth=(Base=10)
+     AngularSpreadHeight=(Base=10)
+     bSteadyState=True
+     Speed=(Base=100,Rand=20)
+     Lifetime=(Base=1.75)
+     ColorEnd=(Base=(R=30,G=30,B=30))
+     SizeEndScale=(Base=5)
+     SpinRate=(Base=-3)
+     DripTime=(Base=0.2)
+     Attraction=(Z=20)
+     Damping=1.5
+     Gravity=(Y=100,Z=-10)
+     Textures(0)=Texture'HPParticle.hp_fx.Particles.Sparkle_3'
+     LastUpdateLocation=(X=-384.5476,Y=201.8692,Z=16.44452)
+     LastEmitLocation=(X=-384.5476,Y=201.8692,Z=16.44452)
+     LastUpdateRotation=(Pitch=4960,Yaw=-16336)
+     EmissionResidue=0.243637
+     Age=915.6707
+     Tag=ParticleFX
+     Location=(X=-384.5476,Y=201.8692,Z=16.44452)
+     Rotation=(Pitch=4960,Yaw=-16336)
+     OldLocation=(X=-346.2101,Y=443.2638,Z=16.44452)
+}

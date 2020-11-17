@@ -1,0 +1,39 @@
+//=============================================================================
+// Petri_hit.
+//=============================================================================
+class Petri_hit expands ParticleFX;
+
+defaultproperties
+{
+     ParticlesPerSec=(Base=100)
+     SourceWidth=(Base=75)
+     SourceHeight=(Base=75)
+     SourceDepth=(Base=50)
+     AngularSpreadWidth=(Base=0)
+     AngularSpreadHeight=(Base=0)
+     bSteadyState=True
+     Speed=(Base=1)
+     Lifetime=(Base=1.75)
+     ColorStart=(Base=(R=128,B=128))
+     ColorEnd=(Base=(R=0))
+     AlphaEnd=(Base=0.5)
+     SizeWidth=(Base=20)
+     SizeLength=(Base=25)
+     SizeEndScale=(Base=0.25)
+     DripTime=(Base=0.2)
+     Attraction=(X=5,Y=5)
+     Damping=3.5
+     Gravity=(Z=100)
+     ParticlesMax=500
+     Textures(0)=Texture'HPParticle.hp_fx.Particles.Sparkle_5'
+     EmitDelay=1.00005
+     LastUpdateLocation=(X=-384.0565,Y=0.978714,Z=15.7245)
+     LastEmitLocation=(X=-384.0565,Y=0.978714,Z=15.7245)
+     LastUpdateRotation=(Pitch=16256,Yaw=-16336)
+     Age=371.507
+     bDynamicLight=True
+     Tag=ParticleFX
+     Location=(X=-384.0565,Y=0.978714,Z=15.7245)
+     Rotation=(Pitch=16256,Yaw=-16336)
+     OldLocation=(X=-352.6492,Y=233.8692,Z=15.7245)
+}
